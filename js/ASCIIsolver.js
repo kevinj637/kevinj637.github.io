@@ -132,5 +132,5 @@ const ASCIInumTOsym = new Map([
 let ASCII;
 document.getElementByID("ASCIIsubmit").onclick = function(){
   ASCII = document.getElementByID("ASCIIinput").value;
-  document.getElementByID("ASCIIanswer").textContent = 'Symbol: $(ASCII)';
+  document.getElementByID("ASCIIanswer").textContent = 'Symbol: ${ASCII}';
 }
