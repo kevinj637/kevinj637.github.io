@@ -1,24 +1,25 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
 import './App.css'
+import '@styles/animations.css'
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      <div className="myName logo">
+        <h1>Kevin Jiang</h1>
       </div>
-      <h1>Vite + React</h1>
+      <div>
+        <p>If you need help with somethingHere's some food for your thoughts...</p>
+        <h2>Resume</h2>
+      </div>
       <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
+        <b>
+        <p> Hello! My name is Kevin Jiang and this is my personal webpage!</p>
+        <p>I am currently a software engineering student at the University of Waterloo, and therefore more likely than not open for work!</p>
+        <p>Scroll down to see more about me!</p>
+        {/* <button onClick={() => setCount((count) => count + 1)}>
           count is {count}
         </button>
         <p>
@@ -27,9 +28,11 @@ function App() {
       </div>
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
-      </p>
+      </p> */}
+      </b>
+      </div>
       <p>
-        This message was approved by Kevin Jiang
+        This message was approved by Kevin Jiang 👍
       </p>
     </>
   )

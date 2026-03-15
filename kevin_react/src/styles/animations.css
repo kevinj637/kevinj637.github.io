@@ -1,0 +1,28 @@
+.myName {
+  width: 350px;
+  height: 120px;
+  padding: 10px;
+  border-radius: 15px;
+  background-image: url("@/assets/clouds/Cloud2.svg");
+  background-size:contain;
+  background-position: center;
+  position: relative; /* Needed for movement */
+  animation: moveRightMyName 3s ease-out,
+    hoverMyName 4s ease-in-out 3s infinite;
+  
+}
+
+@keyframes moveRightMyName {
+  from { left: -450px; top: -150px;}
+  to { left: -2px; top: -8px;}
+}
+
+@keyframes hoverMyName {
+  0%, 100% {
+    transform: translate(-2px, -8px);
+  }
+  50% {
+    transform: translate(2px, 8px);
+  }
+
+}
