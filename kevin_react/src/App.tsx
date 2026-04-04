@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import './App.css'
 import '@styles/animations.css'
+import { ProjectCardData } from '@/markdowns/projectCard'
+import ProjectCard from '@/components/projectCard'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -11,8 +13,10 @@ function App() {
         <h1>Kevin Jiang</h1>
       </div>
       <div>
-        <p>If you need help with somethingHere's some food for your thoughts...</p>
-        <h2>Resume</h2>
+        <h1>Projects</h1>
+        <ProjectCard {...ProjectCardData.UTRAHacks2025}/>
+        <ProjectCard {...ProjectCardData.McHacks2025}/>
+        <ProjectCard {...ProjectCardData.ASNA2025}/>
       </div>
       <div className="card">
         <b>
