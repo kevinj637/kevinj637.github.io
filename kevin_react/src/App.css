@@ -6,7 +6,6 @@
 }
 
 .logo {
-  height: 6em;
   padding: 1.5em;
   will-change: filter;
   transition: filter 300ms;
@@ -17,6 +16,105 @@
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
+
+.projectCard {
+  max-width: 600px;
+  margin: auto;
+  margin-bottom: 20px;
+  padding: 12px;
+  border-radius: 10%;
+  text-align: right;
+  font-size: large;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.projectCardDate {
+  max-width: 600px;
+  margin:auto;
+  text-align: left;
+  font-size: xx-large;
+  /* color:rgba(240, 248, 255, 0.8); */
+}
+
+.projectCardTitle {
+  margin: 10px;
+  padding: 5px;
+  position: relative;
+  border-radius: 40px;
+  color: black;
+}
+
+.projectCardTitle::after {
+  content: "➜";
+  font-size: 48px;
+  font-weight: bold;
+  position: absolute;
+  right: 5%;
+  top: 17%;
+  opacity: 0;
+  transform: translateX(200px);
+  transition: all 1.2s ease-in-out;
+  color: skyblue;
+}
+
+.projectCardTitle:hover::after {
+  opacity: 1;
+  transform: translateX(0);
+  color: black;
+}
+
+.innerProjectCardTitle {
+  display: block;
+  margin-left: auto;
+  width: 50%;
+  text-align: right;
+  padding-right: 15px;
+  transition: all 1.2s ease;
+}
+
+.projectCardTitle:hover .innerProjectCardTitle {
+  transform: translateX(-70px);
+}
+
+.innerProjectCardTitle:hover::after {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.projectImageContainer {
+  display: flex;
+  justify-content: center;
+  margin: auto;
+  width: 300px;
+  height: 200px;
+  position: relative;
+  overflow: hidden;
+}
+
+.projectImage {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  inset:0;
+  object-fit: cover;
+  border-radius: 10px;
+  opacity: 0;
+}
+
+.baseImage {
+  opacity: 1;
+}
+
+.overlayImage {
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+.overlayImage.active {
+  opacity: 1;
+}
+
+
 
 @keyframes logo-spin {
   from {
