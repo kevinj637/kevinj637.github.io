@@ -17,6 +17,8 @@ function App() {
         <ProjectCard {...ProjectCardData.UTRAHacks2025}/>
         <ProjectCard {...ProjectCardData.McHacks2025}/>
         <ProjectCard {...ProjectCardData.ASNA2025}/>
+        <ProjectCard {...ProjectCardData.FredBot}/>
+        <ProjectCard {...ProjectCardData.MyFirstGame}/>
       </div>
       <div className="card">
         <b>
