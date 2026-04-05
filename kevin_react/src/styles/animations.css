@@ -12,9 +12,80 @@
   
 }
 
+.projectCloudHover {
+  animation: projectCardHoverTotal 10s linear infinite;
+}
+
+.projectCloudHover2 {
+  animation: projectCardHoverTotal 10s linear -3s infinite;
+}
+
+.projectCloudHover3 {
+  animation: projectCardHoverTotal 10s linear -6s infinite;
+}
+
+.projectCloudHover:hover,
+.projectCloudHover:focus {
+  animation-play-state: paused;
+}
+
+.projectCloudHover2:hover,
+.projectCloudHover2:focus {
+  animation-play-state: paused;
+}
+
+.projectCloudHover3:hover,
+.projectCloudHover3:focus {
+  animation-play-state: paused;
+}
+
+.cloudFlyIn {
+  opacity: 0;
+  transform: translate(var(--distanceX), var(--distanceY));
+  transition: opacity 0.8s ease, transform 0.8s ease-out;
+}
+
+.cloudFlyIn.show {
+  opacity: 1;
+  transform: translate(0, 0);
+}
+
 @keyframes moveRightMyName {
   from { left: -450px; top: -150px;}
   to { left: -2px; top: -8px;}
+}
+
+@keyframes projectCardHoverTotal {
+  0%, 100% {
+    transform: translate(-2px, 0px);
+  }
+  10% {
+    transform: translate(0px, 0px);
+  }
+  20% {
+    transform: translate(2px, 2px);
+  }
+  30% {
+    transform: translate(0px, 0px);
+  }
+  40% {
+    transform: translate(0px, -2px);
+  }
+  50% {
+    transform: translate(0px, 0px);
+  }
+  60% {
+    transform: translate(0px, 2px);
+  }
+  70% {
+    transform: translate(0px, 0px);
+  }
+  80% {
+    transform: translate(-2px, -2px);
+  }
+  90% {
+    transform: translate(0px, 0px);
+  }
 }
 
 @keyframes hoverMyName {
