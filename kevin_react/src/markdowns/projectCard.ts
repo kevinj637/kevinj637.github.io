@@ -15,7 +15,7 @@ export const ProjectCardData: Record<string, ProjectCardProps> = {
         linkTo: "https://www.theactuarymagazine.org/engaging-actuarial-students-curiosity/",
         date: "2025",
         backgroundColour: "rgba(233,233,233, 0.8)",
-        titleColour: "rgba(255,255,255,0.8)",
+        titleColour: "rgba(180,255,200,0.8)",
     },
     UTRAHacks2025: {
         title: "LeBot James: 2nd Place Winner @ UTRAHacks 2025",
@@ -24,7 +24,7 @@ export const ProjectCardData: Record<string, ProjectCardProps> = {
         imageLinks: ["/projects/robotutra2025.jpg", "/projects/Me_with_team.jpg", "/projects/my_team_utra.jpg", "/projects/my_team_utra_2.jpg"],
         date: "2025",
         backgroundColour: "rgba(127 255 212 / 0.3 )",
-        titleColour: "rgba(245 245 245 / 0.7)",
+        titleColour: "rgba(211 255 200 / 1)",
     },
     McHacks2025: {
         title: "Debug Debacle: 3rd Place Winner @ McHacks 2025",
@@ -42,7 +42,7 @@ export const ProjectCardData: Record<string, ProjectCardProps> = {
         linkTo: "https://github.com/ericli3690/asna-one",
         imageLinks: ["/projects/ASNA1.png", "/projects/ASNA2.png", "/projects/ASNA3.png", "/projects/ASNA4.png"],
         backgroundColour: "rgba(255, 230, 200, 0.45)",
-        titleColour: "rgba(255, 223, 223, 0.6)",   
+        titleColour: "rgba(255, 223, 223, 1)",   
     },
     FredBot: {
         title: "Fredbot: An early experiment with AI",
@@ -55,7 +55,7 @@ export const ProjectCardData: Record<string, ProjectCardProps> = {
     },
     VEXRobotics: {
         title: "3388B: Can We Get Much Higher @ VEX Robotics",
-        description: "Tournament champions, skills champions, and World Championship competitors. That was what my robotics team accomplished over the course of three years as we designed, built, and programmed a competitive VEX robot. Our team's performance inspired many others. More importantly, my efforts in organizing and mentoring the broader school team transformed it into a provincial heavyweight.",
+        description: "Tournament champions, skills champions, and World Championship competitors. That was what my robotics team accomplished over the course of three years as we designed, built, and programmed a competitive VEX robot. Our team's performance inspired many others. Importantly, my efforts in organizing and mentoring the broader school team transformed it into a provincial heavyweight.",
         date: "2021-2024",
         imageLinks: ["/projects/VEX1.JPG", "/projects/VEX2.jpeg", "/projects/VEX3.jpeg", "/projects/VEX4.jpeg", "/projects/VEX5.jpeg", "/projects/VEX6.jpeg", "/projects/VEX7.jpeg", "/projects/VEX8.jpeg", "/projects/VEX9.jpeg"],
         backgroundColour: "rgba(100, 100, 100, 0.67)",
