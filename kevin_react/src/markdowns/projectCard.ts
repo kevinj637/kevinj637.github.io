@@ -1,6 +1,22 @@
-import { type ProjectCardProps } from "@/interfaces/projectCard";
+import { type ProjectCardProps } from "@/interfaces/projectCard"; 
 
 export const ProjectCardData: Record<string, ProjectCardProps> = {
+    Website: {
+        title: "Personal Website",
+        description: "A fun little project to showcase who I am to the rest of the world 😊",
+        date: "2026",
+        backgroundColour: "rgba(255, 128, 128, 0.6)",
+        titleColour: "rgba(255, 167, 167, 0.6)"
+    },
+    SOACompetition2025: {
+        title: "Factuarial: 1st Place @ SOA Research Challenge 2025",
+        description: "Against 68 research teams across 17 countries, we presented a convincing strategy to win $7000 USD at this global challenge. Useing machine learning to unravel and analyze simulated flood damage data, we coordinated with real experts to deliver this winning case study.",
+        attachDocument: "/projects/factuarial.pdf",
+        linkTo: "https://www.theactuarymagazine.org/engaging-actuarial-students-curiosity/",
+        date: "2025",
+        backgroundColour: "rgba(233,233,233, 0.8)",
+        titleColour: "rgba(255,255,255,0.8)",
+    },
     UTRAHacks2025: {
         title: "LeBot James: 2nd Place Winner @ UTRAHacks 2025",
         description: "Built with sweat, tears, Arduino, and C++. At North America's largest robotics hackathon, we designed a robot that showed our hardware and programming skills through beating a series of maze and colour-recognition challenges.",
@@ -26,7 +42,7 @@ export const ProjectCardData: Record<string, ProjectCardProps> = {
         linkTo: "https://github.com/ericli3690/asna-one",
         imageLinks: ["/projects/ASNA1.png", "/projects/ASNA2.png", "/projects/ASNA3.png", "/projects/ASNA4.png"],
         backgroundColour: "rgba(255, 230, 200, 0.45)",
-        titleColour: "rgba(255, 0, 0, 0.6)",   
+        titleColour: "rgba(255, 223, 223, 0.6)",   
     },
     FredBot: {
         title: "Fredbot: An early experiment with AI",
@@ -37,6 +53,14 @@ export const ProjectCardData: Record<string, ProjectCardProps> = {
         backgroundColour: "rgba(167, 0, 226, 0.3)",
         titleColour: "rgba(128, 78, 255, 0.6)",
     },
+    VEXRobotics: {
+        title: "3388B: Can We Get Much Higher @ VEX Robotics",
+        description: "Tournament champions, skills champions, and World Championship competitors. That was what my robotics team accomplished over the course of three years as we designed, built, and programmed a competitive VEX robot. Our team's performance inspired many others. More importantly, my efforts in organizing and mentoring the broader school team transformed it into a provincial heavyweight.",
+        date: "2021-2024",
+        imageLinks: ["/projects/VEX1.JPG", "/projects/VEX2.jpeg", "/projects/VEX3.jpeg", "/projects/VEX4.jpeg", "/projects/VEX5.jpeg", "/projects/VEX6.jpeg", "/projects/VEX7.jpeg", "/projects/VEX8.jpeg", "/projects/VEX9.jpeg"],
+        backgroundColour: "rgba(100, 100, 100, 0.67)",
+        titleColour: "rgba(255, 0, 0, 0.7)",
+    },
     MyFirstGame: {
         title: "Flight Simulator: An Early Plane Game",
         description: "This was one of the first games that I published and shared, it's a simple 2-D flight simulator where you can fly a plane across a simple map! Built in Processing, it's a cool reminder of where I came from 😊.",
@@ -46,5 +70,4 @@ export const ProjectCardData: Record<string, ProjectCardProps> = {
         backgroundColour: "rgba(255, 128, 0, 0.7)",
         titleColour: "rgba(255, 150, 0, 0.8)",
     }
-
 }

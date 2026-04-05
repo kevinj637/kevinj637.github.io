@@ -22,12 +22,32 @@
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
+.projectCloud {
+  background-image: url('@/assets/clouds/CloudSquare.svg');
+  background-size: 100% 100%;
+  max-width: 700px;
+  margin: auto;
+  padding-bottom:50px;
+  margin-bottom: 100px;
+  object-fit: fill;
+  background-position: center;
+}
+
+/* Mobile / small screens */
+@media (max-width: 600px) {
+  .projectCloud {
+    background-image: none;
+    width: 100%;
+    padding-right: 0; /* optional, looks cleaner on mobile */
+  }
+}
+
 .projectCard {
   max-width: 600px;
   margin: auto;
   margin-bottom: 20px;
   padding: 12px;
-  border-radius: 10%;
+  border-radius: 70px;
   text-align: right;
   font-size: large;
   box-shadow: 0 4px 8px rgba(0,0,0,0.2);
@@ -42,6 +62,14 @@
 }
 
 .projectCardTitle {
+  margin: 10px;
+  padding: 5px;
+  position: relative;
+  border-radius: 40px;
+  color: black;
+}
+
+.projectCardTitleNoLink {
   margin: 10px;
   padding: 5px;
   position: relative;
@@ -75,6 +103,14 @@
   text-align: right;
   padding-right: 15px;
   transition: all 1.2s ease;
+}
+
+/* Mobile / small screens */
+@media (max-width: 600px) {
+  .innerProjectCardTitle {
+    width: 100%;
+    padding-right: 0; /* optional, looks cleaner on mobile */
+  }
 }
 
 .projectCardTitle:hover .innerProjectCardTitle {
@@ -124,6 +160,22 @@
 
 .overlayImage.active {
   opacity: 1;
+}
+
+.projectDocument {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  height: 40vh;
+  border:none;
+}
+
+.documentLinkPadding {
+  margin-top: 8px;
+  border-radius: 16px;
+  padding: 12px;
+  margin-left: auto;
+  width: 180px;
 }
 
 

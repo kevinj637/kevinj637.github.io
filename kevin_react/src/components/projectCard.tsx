@@ -28,15 +28,24 @@ export default function ProjectCard({title, description, date, linkTo, imageLink
     
     return (
         <>
+        <div className="projectCloud logo">
         <p className="projectCardDate" style={{color: titleColour}}><b>{date}</b></p>
-        <div className="projectCard logo" style={{backgroundColor: backgroundColour}}>
+        <div className="projectCard" style={{backgroundColor: backgroundColour}}>
+            {linkTo && 
             <a href={linkTo}>
                 <div className="projectCardTitle" style={{backgroundColor: titleColour}}>
                     <div className="innerProjectCardTitle">
                         <h3>{title}</h3>
                     </div>
                 </div>
-            </a>
+            </a>}
+            {!linkTo && 
+            <div className="projectCardTitleNoLink" style={{backgroundColor: titleColour}}>
+                <div className="innerProjectCardTitle">
+                    <h3>{title}</h3>
+                </div>
+            </div>
+            }
             <p>{description}</p>
             {imageLinks?.length && 
             <div>
@@ -57,8 +66,24 @@ export default function ProjectCard({title, description, date, linkTo, imageLink
                 autoPlay muted loop>
                 </video>
             </div>}
+            {attachDocument && 
+            <div style={{ position: "relative" }}>
+                <embed
+                    src={`${attachDocument}#zoom=page-width`}
+                    type="application/pdf"
+                    className="projectDocument"
+                />
+                <div className="documentLinkPadding"
+                style={{backgroundColor: titleColour}}>
+                    <a href={attachDocument}>📖 View Document</a>
+                </div>
+            </div>}
             <br />
-            <p style={{ fontSize: "14px" }}><a href={linkTo}>🔗 {linkTo}</a></p>
+            {linkTo && <p style={{ 
+                fontSize: "14px", overflow: "hidden", 
+                textOverflow: "ellipsis", whiteSpace: "nowrap",
+                maxWidth: 200, marginLeft: "auto"}}><a href={linkTo}>🔗 {linkTo}</a></p>}
+        </div>
         </div>
         </>
     )
