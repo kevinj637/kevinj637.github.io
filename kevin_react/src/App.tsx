@@ -13,19 +13,34 @@ function App() {
         <h1>Kevin Jiang</h1>
       </div>
       <div>
+        <h1>Experiences</h1>
+        <p>Click the map to see more about me!</p>
+      </div>
+      <div>
         <h1>Projects</h1>
+        <ProjectCard {...ProjectCardData.Website}/>
+        <ProjectCard {...ProjectCardData.SOACompetition2025} />
         <ProjectCard {...ProjectCardData.UTRAHacks2025}/>
         <ProjectCard {...ProjectCardData.McHacks2025}/>
         <ProjectCard {...ProjectCardData.ASNA2025}/>
         <ProjectCard {...ProjectCardData.FredBot}/>
+        <ProjectCard {...ProjectCardData.VEXRobotics}/>
         <ProjectCard {...ProjectCardData.MyFirstGame}/>
       </div>
       <div className="card">
-        <b>
-        <p> Hello! My name is Kevin Jiang and this is my personal webpage!</p>
-        <p>I am currently a software engineering student at the University of Waterloo, and therefore more likely than not open for work!</p>
-        <p>Scroll down to see more about me!</p>
-        {/* <button onClick={() => setCount((count) => count + 1)}>
+        
+        <p> Hello! My name is <b>Kevin Jiang</b> and I am currently a <b>software engineering student</b> at the University of Waterloo!</p>
+        <p> Scroll down to see more about me!</p>
+      </div>
+      <p>
+        This message was approved by Kevin Jiang 👍
+      </p>
+
+
+
+
+
+      {/* <button onClick={() => setCount((count) => count + 1)}>
           count is {count}
         </button>
         <p>
@@ -35,11 +50,6 @@ function App() {
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
       </p> */}
-      </b>
-      </div>
-      <p>
-        This message was approved by Kevin Jiang 👍
-      </p>
     </>
   )
 }
