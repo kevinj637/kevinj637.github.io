@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import './App.css'
 import '@styles/animations.css'
+import '@styles/projectCard.css'
 import { ProjectCardData } from '@/markdowns/projectCard'
 import ProjectCard from '@/components/projectCard'
 
