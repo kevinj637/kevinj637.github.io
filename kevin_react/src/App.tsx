@@ -2,8 +2,11 @@ import { useState } from 'react'
 import './App.css'
 import '@styles/animations.css'
 import '@styles/projectCard.css'
+//Remember to manually port leaflet css >;D
+import 'leaflet/dist/leaflet.css'
 import { ProjectCardData } from '@/markdowns/projectCard'
 import ProjectCard from '@/components/projectCard'
+import Map from '@/components/map'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -15,7 +18,8 @@ function App() {
       </div>
       <div>
         <h1>Experiences</h1>
-        <p>Click the map to see more about me!</p>
+        <p>Explore the markers to see more about me!</p>
+        <Map />
       </div>
       <div>
         <h1>Projects</h1>

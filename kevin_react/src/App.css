@@ -22,6 +22,32 @@
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
+.mapSettings {
+  justify-content: center;
+  margin:auto;
+  border-radius: 40px;
+  overflow: hidden;
+  height: 80vh;
+  width: 80%;
+}
+
+.mapImage {
+  width: 100%;
+  max-width: 300px;
+  max-height: 35vh;
+  height: auto;
+}
+
+@media(max-width: 600px){
+  .mapSettings {
+    width: 100%;
+  }
+  .mapImage {
+    width: 150px;
+    height:100px;
+    object-fit: cover;
+  }
+}
 
 
 @keyframes logo-spin {

@@ -1,54 +1,60 @@
-.myName {
-  width: 330px;
-  height: 120px;
-  padding: 10px;
-  border-radius: 15px;
-  background-image: url("@/assets/clouds/Cloud2.svg");
-  background-size:contain;
-  background-position: center;
-  position: relative; /* Needed for movement */
-  animation: moveRightMyName 3s ease-out,
-    hoverMyName 4s ease-in-out 3s infinite;
-  
-}
+@media (prefers-reduced-motion: no-preference) {
 
-.projectCloudHover {
-  animation: projectCardHoverTotal 10s linear infinite;
-}
+  .myName {
+    width: 330px;
+    height: 120px;
+    padding: 10px;
+    border-radius: 15px;
+    background-image: url("@/assets/clouds/Cloud2.svg");
+    background-size:contain;
+    background-position: center;
+    position: relative; /* Needed for movement */
+    animation: moveRightMyName 3s ease-out,
+      hoverMyName 4s ease-in-out 3s infinite;
+    
+  }
 
-.projectCloudHover2 {
-  animation: projectCardHoverTotal 10s linear -3s infinite;
-}
+  .projectCloudHover {
+    animation: projectCardHoverTotal 10s linear infinite;
+  }
 
-.projectCloudHover3 {
-  animation: projectCardHoverTotal 10s linear -6s infinite;
-}
+  .projectCloudHover2 {
+    animation: projectCardHoverTotal 10s linear -3s infinite;
+  }
 
-.projectCloudHover:hover,
-.projectCloudHover:focus {
-  animation-play-state: paused;
-}
+  .projectCloudHover3 {
+    animation: projectCardHoverTotal 10s linear -6s infinite;
+  }
 
-.projectCloudHover2:hover,
-.projectCloudHover2:focus {
-  animation-play-state: paused;
-}
+  .projectCloudHover:hover,
+  .projectCloudHover:focus {
+    animation-play-state: paused;
+  }
 
-.projectCloudHover3:hover,
-.projectCloudHover3:focus {
-  animation-play-state: paused;
-}
+  .projectCloudHover2:hover,
+  .projectCloudHover2:focus {
+    animation-play-state: paused;
+  }
 
-.cloudFlyIn {
-  opacity: 0;
-  transform: translate(var(--distanceX), var(--distanceY));
-  transition: opacity 0.8s ease, transform 0.8s ease-out;
-}
+  .projectCloudHover3:hover,
+  .projectCloudHover3:focus {
+    animation-play-state: paused;
+  }
 
-.cloudFlyIn.show {
-  opacity: 1;
-  transform: translate(0, 0);
-}
+  .cloudFlyIn {
+    opacity: 0;
+    transform: translate(var(--distanceX), var(--distanceY));
+    transition: opacity 0.8s ease, transform 0.8s ease-out;
+  }
+
+  .cloudFlyIn.show {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+
+
+
+} /* THIS BRACKET IS FOR THE MEDIA TAG*/
 
 @keyframes moveRightMyName {
   from { left: -450px; top: -150px;}
