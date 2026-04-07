@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import './App.css'
 import '@styles/animations.css'
 import '@styles/projectCard.css'
@@ -10,7 +9,6 @@ import Map from '@/components/map'
 import Resume from './components/resume'
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <>

@@ -1,5 +1,5 @@
 import type { mapProps } from "@/interfaces/map";
-import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
+import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import { MapData } from "@/markdowns/map";
 import { useFadeIn } from "./flyIn";
 
