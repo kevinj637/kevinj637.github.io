@@ -4,7 +4,11 @@
   padding: 50px;
   text-align: center;
 }
-
+@media (max-width: 600px) {
+  #root {
+    padding: 0px;
+  }
+}
 
 /* For Phone sizing */
 * { box-sizing: border-box; }
@@ -39,14 +43,33 @@
 }
 
 @media(max-width: 600px){
-  .mapSettings {
-    width: 100%;
-  }
   .mapImage {
     width: 150px;
     height:100px;
     object-fit: cover;
   }
+}
+
+.resumeCloud {
+  background-image: url('@/assets/clouds/CloudSquare.svg');
+  background-size: 100% 100%;
+  max-width: 700px;
+  margin: auto;
+  height: 110vh;
+  padding: 10px;
+  padding-top: 100px;
+  padding-bottom: 100px;
+  margin-bottom: 100px;
+  object-fit: fill;
+  background-position: center;
+}
+
+.resumeLink {
+  margin-top: 8px;
+  border-radius: 16px;
+  padding: 12px;
+  margin: auto;
+  width: 180px;
 }
 
 

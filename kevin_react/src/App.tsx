@@ -7,6 +7,7 @@ import 'leaflet/dist/leaflet.css'
 import { ProjectCardData } from '@/markdowns/projectCard'
 import ProjectCard from '@/components/projectCard'
 import Map from '@/components/map'
+import Resume from './components/resume'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -31,6 +32,10 @@ function App() {
         <ProjectCard {...ProjectCardData.FredBot}/>
         <ProjectCard {...ProjectCardData.VEXRobotics}/>
         <ProjectCard {...ProjectCardData.MyFirstGame}/>
+      </div>
+      <div>
+        <h1>Resumé</h1>
+        <Resume />
       </div>
       <div className="card">
         

@@ -52,11 +52,13 @@
     transform: translate(0, 0);
   }
 
+  .resumeShow,
   .mapShow {
     opacity: 0;
     transition: opacity 1.6s ease;
   }
 
+  .resumeShow.show,
   .mapShow.show {
     opacity: 1;
   }
