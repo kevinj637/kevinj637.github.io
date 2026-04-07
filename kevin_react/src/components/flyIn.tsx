@@ -29,3 +29,5 @@ export function useFlyIn(threshold = 0.2, runOnce = false) {
 
   return {flyInRef, isVisible};
 }
+
+export const useFadeIn = useFlyIn;

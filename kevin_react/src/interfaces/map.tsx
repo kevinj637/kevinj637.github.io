@@ -5,6 +5,7 @@ export interface mapProps {
     position: LatLngExpression,
     popupText: React.ReactNode,
     imageLink?: string,
+    indexOffset?: number,
 }
 
 export interface mapTextProps {
