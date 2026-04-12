@@ -24,7 +24,7 @@ export default function Map() {
     //https://en.wikipedia.org/wiki/Centre_of_Canada
     return (
         <div ref={flyInRef} className={`mapSettings mapShow ${isVisible ? "show" : ""}`}>
-        <MapContainer center={[48.40, -96.466667]} zoom={5}
+        <MapContainer center={[48.40, -96.466667]} zoom={4}
         style={{ height: "100%", width: "100%" }}>
             <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">Open Street Map</a> contributors.....'
