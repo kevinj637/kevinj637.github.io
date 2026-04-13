@@ -9,6 +9,7 @@ import ProjectCard from '@/components/projectCard'
 import Map from '@/components/map'
 import Resume from '@/components/resume'
 import SkillsGrid from '@/components/skillsCard'
+import ScrollHeader from './components/scrollAwayHeader'
 
 function App() {
 
@@ -16,6 +17,9 @@ function App() {
     <>
       <div className="myName logo">
         <h1>Kevin Jiang</h1>
+      </div>
+      <div>
+        <ScrollHeader />
       </div>
       <div>
         <h1>Experiences</h1>
@@ -47,7 +51,17 @@ function App() {
       </div>
       <div>
         <h1>Contact</h1>
-        
+        <p>Feel free to reach out!</p>
+        <p>Currently open to work and actively searching for new opportunities :)</p>
+        <div className='contactWrapper'>
+          <ul className='contactList'>
+          <li><a href="mailto:kxjiang@uwaterloo.ca">→ kxjiang@uwaterloo.ca</a></li>
+          <li><a href="tel:+18257123266">→ +1 (825)712-3266</a></li>
+          <li><a href="https://www.github.com/kevinj637">→ github.com/kevinj637</a></li>
+          <li><a href="https://www.linkedin.com/in/kevin-jiang637/">→ linkedin.com/in/kevin-jiang637</a></li>
+
+        </ul>
+        </div>
       </div>
       <div className="card">
         
@@ -55,6 +69,8 @@ function App() {
         <p> Scroll down to see more about me!</p>
       </div>
       <p>
+        <br></br>
+        <br></br>
         This message was approved by Kevin Jiang 👍
       </p>
 

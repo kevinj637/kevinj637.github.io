@@ -91,7 +91,7 @@ export default function ProjectCard({title, description, date, linkTo, imageLink
                 </div>}
                 <br />
                 {linkTo && <p style={{ 
-                    fontSize: "14px", overflow: "hidden", 
+                    fontSize: "1rem", overflow: "hidden", 
                     textOverflow: "ellipsis", whiteSpace: "nowrap",
                     maxWidth: 200, marginLeft: "auto"}}><a href={linkTo}>🔗 {linkTo}</a></p>}
             </div>

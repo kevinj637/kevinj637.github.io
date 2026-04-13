@@ -10,7 +10,7 @@ export const ProjectCardData: Record<string, ProjectCardProps> = {
     },
     SOACompetition2025: {
         title: "Factuarial: 1st Place @ SOA Research Challenge 2025",
-        description: "Against 68 research teams across 17 countries, we presented a convincing strategy to win $7000 USD at this global challenge. Useing machine learning to unravel and analyze simulated flood damage data, we coordinated with real experts to deliver this winning case study.",
+        description: "Against 68 research teams across 17 countries, we presented a convincing strategy to win $7000 USD at this global challenge. Using machine learning to unravel and analyze simulated flood damage data, we contacted and coordinated with real flood policy researchers to deliver this winning case study.",
         attachDocument: "/public/projects/factuarial.pdf",
         linkTo: "https://www.theactuarymagazine.org/engaging-actuarial-students-curiosity/",
         date: "2025",
@@ -31,7 +31,7 @@ export const ProjectCardData: Record<string, ProjectCardProps> = {
         description: "Competing against 471 participants at Canada's Original Hackathon against 500+ competitors, we built Debug Debacle, a website where users compete to solve a bug. To make the challenge harder, there are no test cases and you only have 5 minutes to find the bug!",
         date: "2025",
         linkTo: "https://devpost.com/software/debug-debacle",
-        imageLinks: ["/public/projects/mcHacks1.png", "/public/projects/mcHacks2.png", "/public/projects/mcHacks3.png", "/public/projects/mcHacks4.png", "/public/projects/mcHacks5.png"],
+        imageLinks: ["/public/projects/mcHacks1.png", "/public/projects/mcHacks2.png", "/public/projects/mcHacks3.png", "/public/projects/mcHacks4.png", "/public/projects/mcHacks5.JPG"],
         backgroundColour:"rgba(253, 255, 119, 0.43)",
         titleColour: "lightYellow"
     },
@@ -63,7 +63,7 @@ export const ProjectCardData: Record<string, ProjectCardProps> = {
     },
     MyFirstGame: {
         title: "Flight Simulator: An Early Plane Game",
-        description: "This was one of the first games that I published and shared, it's a simple 2-D flight simulator where you can fly a plane across a simple map! Built in Processing, it's a cool reminder of where I came from 😊.",
+        description: "One of the first code projects that I shared, it's a simple 2-D flight simulator where you can fly a plane across a simple map! Built using Processing, it's a reminder of where I came from 😊.",
         date: "2021",
         videoLink: "/public/projects/SnapInsta.to_AQPLFXfHTeTFwJIUugb0_LUELAzXkWapvtjfRXoDHFAkNOCXnzLOyOjMuNVdgtVV8JT_nwq1dX29lVPsUNKm1PQHcVNlj_eeOWRY-yQ.mp4",
         linkTo: "https://www.instagram.com/p/CE78-P8AuT8/?utm_source=qr",

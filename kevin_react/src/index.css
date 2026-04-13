@@ -17,6 +17,7 @@ a {
   font-weight: 500;
   color: #646cff;
   text-decoration: inherit;
+  font-size: 1.3rem;
 }
 a:hover {
   color: #535bf2;
@@ -34,6 +35,10 @@ body {
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
+}
+
+p {
+  font-size: 1.3rem;
 }
 
 button {
