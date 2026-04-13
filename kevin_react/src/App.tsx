@@ -1,6 +1,8 @@
 import './App.css'
 import '@styles/animations.css'
 import '@styles/projectCard.css'
+import '@styles/welcome.css'
+import '@styles/bg-clouds.css'
 //Remember to manually port leaflet css >;D
 import 'leaflet/dist/leaflet.css'
 import { ProjectCardData } from '@/markdowns/projectCard'
@@ -9,17 +11,18 @@ import ProjectCard from '@/components/projectCard'
 import Map from '@/components/map'
 import Resume from '@/components/resume'
 import SkillsGrid from '@/components/skillsCard'
-import ScrollHeader from './components/scrollAwayHeader'
-
+import WelcomeCard from './components/welcomeCard'
+import BackgroundClouds from './components/backgroundCloud'
 function App() {
 
   return (
     <>
+      <BackgroundClouds />
       <div className="myName logo">
         <h1>Kevin Jiang</h1>
       </div>
       <div>
-        <ScrollHeader />
+        <WelcomeCard />
       </div>
       <div>
         <h1>Experiences</h1>
@@ -59,15 +62,11 @@ function App() {
           <li><a href="tel:+18257123266">→ +1 (825)712-3266</a></li>
           <li><a href="https://www.github.com/kevinj637">→ github.com/kevinj637</a></li>
           <li><a href="https://www.linkedin.com/in/kevin-jiang637/">→ linkedin.com/in/kevin-jiang637</a></li>
-
+          <li><a href="https://www.se-webring.xyz/">→ se-webring.xyz</a></li>
         </ul>
         </div>
       </div>
-      <div className="card">
-        
-        <p> Hello! My name is <b>Kevin Jiang</b> and I am currently a <b>software engineering student</b> at the University of Waterloo!</p>
-        <p> Scroll down to see more about me!</p>
-      </div>
+      
       <p>
         <br></br>
         <br></br>

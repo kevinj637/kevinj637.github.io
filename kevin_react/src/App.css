@@ -79,6 +79,7 @@
 .contactList {
   list-style: none;
   padding: 0;
+  padding-right: 10px;
   margin: 0;
   margin-right: 30%;
   margin-left: auto;
@@ -90,11 +91,17 @@
   padding-right: 1em;
 }
 
+.contactList li:hover {
+  position: relative;
+  font-size: 1.4em;
+}
+
 /* RTL means that before is now the right-most content :)*/
 .contactList li::before {
   color: #646cff;
   content: "•";
   position: absolute;
+  padding-top: 2px;
   right: 0;
 }
 
