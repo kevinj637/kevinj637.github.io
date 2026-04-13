@@ -14,28 +14,37 @@
     
   }
 
+  .sk-cloud1-hover,
   .projectCloudHover {
     animation: projectCardHoverTotal 10s linear infinite;
   }
 
+  .sk-cloud2-hover,
   .projectCloudHover2 {
     animation: projectCardHoverTotal 10s linear -3s infinite;
   }
 
+  .sk-cloud3-hover,
   .projectCloudHover3 {
     animation: projectCardHoverTotal 10s linear -6s infinite;
   }
 
+  .sk-cloud1-hover:hover,
+  .sk-cloud1-hover:focus,
   .projectCloudHover:hover,
   .projectCloudHover:focus {
     animation-play-state: paused;
   }
 
+  .sk-cloud2-hover:hover,
+  .sk-cloud2-hover:focus,
   .projectCloudHover2:hover,
   .projectCloudHover2:focus {
     animation-play-state: paused;
   }
 
+  .sk-cloud3-hover:hover,
+  .sk-cloud3-hover:focus,
   .projectCloudHover3:hover,
   .projectCloudHover3:focus {
     animation-play-state: paused;

@@ -1,0 +1,38 @@
+.skills-base {
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    padding:20px;
+}
+
+.sk-cloud1 {
+    background-image: url("@/assets/clouds/Cloud4.svg");
+}
+
+.sk-cloud2 {
+    background-image: url("@/assets/clouds/Cloud9.svg");
+}
+
+.sk-cloud3 {
+    background-image: url("@/assets/clouds/Cloud2.svg");
+}
+
+.cloud-drop {
+    transition: filter 0.3s;
+}
+
+.cloud-drop:hover {
+    filter: drop-shadow(0 0 1.5em var(--skills-background-color))
+}
+
+.skills-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 28px;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.skills-col {
+    flex: 1 1 270px;
+}

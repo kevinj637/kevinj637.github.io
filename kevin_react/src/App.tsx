@@ -4,9 +4,11 @@ import '@styles/projectCard.css'
 //Remember to manually port leaflet css >;D
 import 'leaflet/dist/leaflet.css'
 import { ProjectCardData } from '@/markdowns/projectCard'
+import { skillsCardData } from './markdowns/skills'
 import ProjectCard from '@/components/projectCard'
 import Map from '@/components/map'
-import Resume from './components/resume'
+import Resume from '@/components/resume'
+import SkillsGrid from '@/components/skillsCard'
 
 function App() {
 
@@ -32,8 +34,20 @@ function App() {
         <ProjectCard {...ProjectCardData.MyFirstGame}/>
       </div>
       <div>
+        <h1>Skills</h1>
+        <SkillsGrid data={skillsCardData.language} />
+        <SkillsGrid data={skillsCardData.backend} />
+        <SkillsGrid data={skillsCardData.frontend} />
+        <SkillsGrid data={skillsCardData.dataml} />
+        <SkillsGrid data={skillsCardData.databases} />
+      </div>
+      <div>
         <h1>Resumé</h1>
         <Resume />
+      </div>
+      <div>
+        <h1>Contact</h1>
+        
       </div>
       <div className="card">
         
