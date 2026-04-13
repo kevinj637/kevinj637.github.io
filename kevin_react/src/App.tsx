@@ -3,8 +3,6 @@ import '@styles/animations.css'
 import '@styles/projectCard.css'
 import '@styles/welcome.css'
 import '@styles/bg-clouds.css'
-//Remember to manually port leaflet css >;D
-import 'leaflet/dist/leaflet.css'
 import { ProjectCardData } from '@/markdowns/projectCard'
 import { skillsCardData } from './markdowns/skills'
 import ProjectCard from '@/components/projectCard'

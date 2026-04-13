@@ -109,7 +109,7 @@ export const MapData: Record<string, mapProps>={
     ColdLake4: {
         position: [54.40439566181379, -110.27887235729956],
         popupText: autoFormat({location: "Cold Lake, AB", time: "2024", teaser: "Cold Lake Air Show 2024, a nice field trip ✈️"}),
-        imageLink: "/public/map/CTCAirshow.jpeg",
+        imageLink: "/public/map/CTCAirshow.jpg",
         indexOffset: -1,
     },
     ColdLake5: {
@@ -121,13 +121,13 @@ export const MapData: Record<string, mapProps>={
         position: [51.08668033100261, -114.13762810596509],
         popupText: autoFormat({location: "Many 😉", time: "2022, 2023, 2024", teaser: "Skills Champions, Tournament Champions 🤖🏆"}),
         //SHARED WITH PROJECT
-        imageLink: "/projects/VEX7.jpeg",
+        imageLink: "/public/projects/VEX7.jpg",
     },
     VEXWorlds: {
         position: [32.773733966369726, -96.80240113596484],
         popupText: autoFormat({location: "Dallas, TX", time: "2023", teaser: "Worlds Competitors 🤖"}),
         //SHARED WITH PROJECT
-        imageLink: "/projects/VEX1.jpeg",
+        imageLink: "/public/projects/VEX1.JPG",
     },
     ASNA20251: {
         position: [43.09192568249971, -79.07257621431579],
@@ -148,7 +148,7 @@ export const MapData: Record<string, mapProps>={
         position: [43.66081251149976, -79.39662128348408],
         popupText: autoFormat({location: "Toronto, ON", time: "2025", teaser: "At UTRAHacks 2025 🏆"}),
         //SHARED WITH PROJECTS
-        imageLink: "/projects/Me_with_team.jpg",
+        imageLink: "/public/projects/Me_with_team.jpg",
     },
     McHacks1: {
         position: [45.50445291010433, -73.57805485269579],
