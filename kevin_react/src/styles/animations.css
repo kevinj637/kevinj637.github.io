@@ -8,9 +8,10 @@
     background-image: url("@/assets/clouds/Cloud2.svg");
     background-size:contain;
     background-position: center;
-    position: relative; /* Needed for movement */
-    animation: moveRightMyName 3s ease-out,
-      hoverMyName 4s ease-in-out 3s infinite;
+    position: fixed; /* Needed for movement */
+    z-index: 1000000;
+    animation: moveRightMyName 4s ease-out,
+      hoverMyName 4s ease-in-out 4s infinite;
     
   }
 
@@ -76,11 +77,6 @@
 
 } /* THIS BRACKET IS FOR THE MEDIA TAG*/
 
-@keyframes moveRightMyName {
-  from { left: -450px; top: -150px;}
-  to { left: -2px; top: -8px;}
-}
-
 @keyframes projectCardHoverTotal {
   0%, 100% {
     transform: translate(-2px, 0px);
@@ -111,6 +107,16 @@
   }
   90% {
     transform: translate(0px, 0px);
+  }
+}
+
+
+@keyframes moveRightMyName {
+  from {
+    transform: translate(-450px, -150px);
+  }
+  to {
+    transform: translate(-2px, -8px);
   }
 }
 

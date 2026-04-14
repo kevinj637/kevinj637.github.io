@@ -1,3 +1,21 @@
+@keyframes bg-cloud1-movement {
+    0% {
+        transform: translate(-100%, 0px);
+    }
+    100%{
+        transform: translate(100vw, 100%);
+    }
+}
+
+@keyframes bg-cloud2-movement {
+    0% {
+        transform: translate(-100%, 0px);
+    }
+    100%{
+        transform: translate(100vw, -100%);
+    }
+}
+
 .bg-cloud1 {
     position: fixed;
     background-image: url('@/assets/clouds/cloud1.svg');
@@ -11,13 +29,17 @@
     animation: bg-cloud1-movement 90s linear infinite;
 }
 
-@keyframes bg-cloud1-movement {
-    0% {
-        transform: translate(-200px, 0px);
-    }
-    100%{
-        transform: translate(100vw, 100%);
-    }
+.bg-cloud2 {
+    position: fixed;
+    background-image: url('@/assets/clouds/cloud2.svg');
+    background-size: contain ;
+    opacity: 0.5;
+    top: 700px;
+    left: 0px;
+    width: 427px;
+    aspect-ratio: 1280/486;
+    z-index: 0;
+    animation: bg-cloud2-movement 150s linear -90s infinite;
 }
 
 .bg-cloud3 {
@@ -29,7 +51,7 @@
     left: 0px;
     width: 156px;
     aspect-ratio: 469/272;
-    animation: bg-cloud1-movement 70s linear -80s infinite;
+    animation: bg-cloud2-movement 100s linear -60s infinite;
 }
 
 .bg-cloud4 {
@@ -41,7 +63,18 @@
     left: 0px;
     width: 164px;
     aspect-ratio: 493/251;
-    animation: bg-cloud1-movement 80s linear infinite reverse;
+    animation: bg-cloud1-movement 45s linear infinite reverse;
+}
+.bg-cloud5 {
+    position: fixed;
+    background-image: url('@/assets/clouds/cloud5.svg');
+    background-size: contain ;
+    opacity: 0.5;
+    top: 500px;
+    left: 400px;
+    width: 329px;
+    aspect-ratio: 987/457;
+    animation: bg-cloud2-movement 75s linear infinite reverse;
 }
 .bg-cloud6 {
     position: fixed;
@@ -54,6 +87,17 @@
     aspect-ratio: 1060/607;
     animation: bg-cloud1-movement 110s linear -35s infinite;
 }
+.bg-cloud7 {
+    position: fixed;
+    background-image: url('@/assets/clouds/cloud7.svg');
+    background-size: contain ;
+    opacity: 0.5;
+    top: 600px;
+    left: 0px;
+    width: 139px;
+    aspect-ratio: 417/301;
+    animation: bg-cloud2-movement 70s linear -35s infinite;
+}
 .bg-cloud8 {
     position: fixed;
     background-image: url('@/assets/clouds/cloud8.svg');
@@ -64,4 +108,15 @@
     width: 308px;
     aspect-ratio: 924/479;
     animation: bg-cloud1-movement 80s linear infinite reverse;
+}
+.bg-cloud9 {
+    position: fixed;
+    background-image: url('@/assets/clouds/cloud9.svg');
+    background-size: contain ;
+    opacity: 0.5;
+    top: 650px;
+    left: 0px;
+    width: 312px;
+    aspect-ratio: 937/525;
+    animation: bg-cloud2-movement 120s linear infinite -10s reverse;
 }
