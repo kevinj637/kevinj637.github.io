@@ -42,12 +42,12 @@ export const MapData: Record<string, mapProps>={
     Regina1: {
         position: [50.417970691974766, -104.5848714867367],
         popupText: autoFormat({location: "Regina, SK", time: "2023", teaser: "Regis ??? 🪣 🌊 🥳"}),
-        imageLink: "/public/map/PowerDunking.jpeg",
+        imageLink: "/public/map/PowerDunking.jpg",
     },
     Regina2: {
         position: [50.4374963591256, -104.65357394234996],
         popupText: autoFormat({location: "Regina, SK", time: "2023", teaser: "Me with my instructor Raheem, solo complete 🛩️"}),
-        imageLink: "/public/map/PowerSolo.jpeg"
+        imageLink: "/public/map/PowerSolo.jpg"
     },
     Regina3: {
         position: [50.43852811100869, -104.66040356763608],
