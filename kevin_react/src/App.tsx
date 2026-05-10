@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Link, HashRouter } from "react-router";
+import { Routes, Route, HashRouter } from "react-router";
 
 import '@/App.css'
 import '@styles/animations.css'
