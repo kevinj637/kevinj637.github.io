@@ -1,6 +1,6 @@
 import { type ProjectCardProps } from "@/interfaces/projectCard"; 
 
-export const ProjectCardData: Record<string, ProjectCardProps> = {
+export const projectCardData: Record<string, ProjectCardProps> = {
     Website: {
         title: "Personal Website",
         description: "A fun little project to showcase who I am to the rest of the world 😊",
