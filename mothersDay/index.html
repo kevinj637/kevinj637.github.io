@@ -1,0 +1,83 @@
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <link rel="icon" type="image/png" sizes="32x32" href="icons8-flower-doodle-windows-11-color-32.png" />
+        <title>Happy Mother's Day!</title>
+
+        <!-- Synchronously loaded-->
+        <link rel="stylesheet" href="styles.css" />
+        <!-- Asynchronously loaded-->
+        <script async src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    </head>
+    <body>
+        <div class="mainText">
+            <button onclick="cheer()" class="mainTextButton">
+                <b><i>Happy Mother's Day!</i></b>
+            </button>
+        </div>
+
+        <div class="bouquet-1-wrap" onclick="cheer2()">
+            <div class="bouquet-1"></div>
+        </div>
+        <div class="bouquet-2-wrap" onclick="cheer2()">
+            <div class="bouquet-2"></div>
+        </div>
+        <div class="bouquet-3-wrap" onclick="cheer2()">
+            <div class="bouquet-3"></div>
+        </div>
+    </body>
+    <script>
+
+        window.addEventListener("wheel", (e) => {
+            if (e.deltaY > 50) {
+                window.location.href = "/";
+            }
+        });
+
+        async function cheer() {
+        // wait until confetti library finishes loading
+        while (typeof confetti === "undefined") {
+            await new Promise(r => setTimeout(r, 50));
+        }
+
+        confetti({
+            particleCount: 150,
+            startVelocity: 20,
+            spread: 100,
+            decay: 0.95,
+            gravity: 0.7,
+            angle: 60,
+            origin: { x: 0, y: 0.4}
+        });
+
+        confetti({
+            particleCount: 150,
+            startVelocity: 20,
+            decay: 0.95,
+            gravity: 0.7,
+            spread: 100,
+            angle: 120,
+            origin: { x: 1, y: 0.4}
+        });
+        
+        }
+
+        async function cheer2() {
+        // wait until confetti library finishes loading
+        while (typeof confetti === "undefined") {
+            await new Promise(r => setTimeout(r, 50));
+        }
+
+        confetti({
+            particleCount: 200,
+            startVelocity: 60,
+            spread: 180,
+            ticks: 500,
+            angle: 270,
+            origin: {x: 0.5, y: -0.4}
+        })
+
+
+        }
+    </script>
+</html>
