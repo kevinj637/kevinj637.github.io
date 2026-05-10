@@ -6,15 +6,15 @@
 }
 
 .sk-cloud1 {
-    background-image: url("@/assets/clouds/Cloud4.svg");
+    background-image: url("@/assets/clouds/cloud4.svg");
 }
 
 .sk-cloud2 {
-    background-image: url("@/assets/clouds/Cloud9.svg");
+    background-image: url("@/assets/clouds/cloud9.svg");
 }
 
 .sk-cloud3 {
-    background-image: url("@/assets/clouds/Cloud2.svg");
+    background-image: url("@/assets/clouds/cloud2.svg");
 }
 
 .cloud-drop {
