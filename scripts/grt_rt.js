@@ -36,11 +36,12 @@ async function main() {
         : null
     }));
 
-  const outputDir = path.join(__dirname, "..", "public", "data");
+  const outputDir = path.join(__dirname, "..", "public", "grt_data");
+  const outputFilePath = path.join(outputDir, "vehicles.json");
   await fs.mkdir(outputDir, { recursive: true });
 
   await fs.writeFile(
-    path.join(outputDir, "vehicles.json"),
+    outputFilePath,
     JSON.stringify(
       {
         fetchedAt: new Date().toISOString(),
