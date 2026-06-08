@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "gtfs-realtime-bindings": "^2.0.0"
+  },
+  "scripts": {
+    "fetch:grt": "node scripts/grt_rt.js"
+  },
+  "type": "module"
+}
