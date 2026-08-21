@@ -85,7 +85,28 @@
 @media (max-width: 600px) {
   .innerProjectCardTitle {
     width: 100%;
+    margin: auto;
     padding-right: 0; /* optional, looks cleaner on mobile */
+    text-align: center;
+  }
+
+  .projectCard {
+    text-align: center;
+  }
+
+  .projectCardDate {
+    text-align: center;
+  }
+
+  /* Center the link line on mobile instead of pushing it right */
+  .projectCard p[style] {
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .documentLinkPadding {
+    margin-left: auto;
+    margin-right: auto;
   }
 }
 
@@ -152,4 +173,9 @@
   padding: 12px;
   margin-left: auto;
   width: 200px;
+}
+
+/* Link line: pushed right on desktop */
+.projectCardLink {
+  margin-left: auto;
 }

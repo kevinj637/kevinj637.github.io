@@ -16,8 +16,21 @@
   }
 }
 
+/* Full-viewport container that clips clouds so their off-screen
+   animation (translateX up to 100vw + own width) never creates
+   horizontal overflow / a white strip on the right. */
+.bg-cloud-container {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
 .bg-cloud {
-  position: fixed; /* So clouds are always in view of the screen */
+  position: absolute; /* Positioned within the clipped container */
   background-size: contain;
   background-repeat: no-repeat;
   opacity: 0.5;

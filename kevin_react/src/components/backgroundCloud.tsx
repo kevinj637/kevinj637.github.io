@@ -2,7 +2,7 @@
 
 export default function BackgroundClouds() {
     return (
-        <>
+        <div className="bg-cloud-container">
         <div className="bg-cloud bg-cloud1"></div>
         <div className="bg-cloud bg-cloud2"></div>
         <div className="bg-cloud bg-cloud3"></div>
@@ -12,6 +12,6 @@ export default function BackgroundClouds() {
         <div className="bg-cloud bg-cloud7"></div>
         <div className="bg-cloud bg-cloud8"></div>
         <div className="bg-cloud bg-cloud9"></div>
-        </>
+        </div>
     )
 }
