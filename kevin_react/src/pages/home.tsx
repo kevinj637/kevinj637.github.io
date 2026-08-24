@@ -47,10 +47,13 @@ export default function Home() {
             <SkillsGrid data={skillsCardData.dataml} />
             <SkillsGrid data={skillsCardData.databases} />
           </div>
+
           <div>
             <h1>Resumé</h1>
             <Resume />
           </div>
+
+
           <div>
             <h1>Contact</h1>
             <p>Feel free to reach out!</p>

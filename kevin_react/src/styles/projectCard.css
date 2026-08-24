@@ -99,9 +99,9 @@
   }
 
   /* Center the link line on mobile instead of pushing it right */
-  .projectCard p[style] {
-    margin-left: auto !important;
-    margin-right: auto !important;
+  .projectCardLink {
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .documentLinkPadding {
