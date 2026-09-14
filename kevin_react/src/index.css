@@ -41,6 +41,39 @@ body {
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
+
+/* EX: fake 3D box using the element + a skewed ::before side */
+  position: relative;
+  display: inline-block;
+  padding: 0.4em 0.6em;
+  background: #0a0a0a;        /* front face: (near) black */
+  color: #fff;
+}
+
+/* right side face */
+h1::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 100%;
+  width: 16px;               /* depth of the box */
+  height: 100%;
+  background: #2b2b2b;        /* dark gray side */
+  transform: skewY(-45deg);
+  transform-origin: left top;
+}
+
+/* top face */
+h1::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  width: 100%;
+  height: 16px;              /* matches the side depth */
+  background: #3a3a3a;        /* lightest face: top catches the most light */
+  transform: skewX(-45deg);
+  transform-origin: bottom left;
 }
 
 p {
