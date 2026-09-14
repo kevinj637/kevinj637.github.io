@@ -179,3 +179,22 @@
 .projectCardLink {
   margin-left: auto;
 }
+
+/* Animated collapse wrapper. Uses the grid-rows 1fr <-> 0fr technique so
+   the body animates to its natural height without hardcoding a pixel value.
+   1.5s growth with a slightly overshooting ease-out bezier. */
+.projectCardCollapse {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows 1.0s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.projectCardCollapse.collapsed {
+  grid-template-rows: 0fr;
+}
+
+/* The grid child must be able to shrink below its content height and clip. */
+.projectCardCollapse > .projectCardBody {
+  overflow: hidden;
+  min-height: 0;
+}

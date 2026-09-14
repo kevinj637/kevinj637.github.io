@@ -9,6 +9,9 @@ export default function ProjectCard({title, description, date, linkTo, imageLink
   const [nextIndex, setNextIndex] = useState(1);
   const [isFading, setIsFading] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(true);
+  // Touch / no-hover devices: hover can't drive the expand, so tap does.
+  const isTouch = typeof window !== "undefined" &&
+    window.matchMedia?.("(hover: none)").matches;
   const distanceX = (Math.random() * -180 - 90) * (Math.round(Math.random()) * -2 + 1);
   const distanceY = (Math.random() - 0.5) * 150;
   const hoverType = Math.floor(Math.random() * 3)
@@ -46,7 +49,15 @@ export default function ProjectCard({title, description, date, linkTo, imageLink
                 onMouseEnter={() => setIsCollapsed(false)}
                 onMouseLeave={() => setIsCollapsed(true)}>
                 {linkTo && 
-                <a href={linkTo}>
+                <a href={linkTo}
+                    onClick={(e) => {
+                        // On touch devices, the first tap expands the card
+                        // instead of navigating; a second tap follows the link.
+                        if (isTouch && isCollapsed) {
+                            e.preventDefault();
+                            setIsCollapsed(false);
+                        }
+                    }}>
                     <div className="projectCardTitle" style={{backgroundColor: titleColour}}>
                         <div className="innerProjectCardTitle">
                             <h3>{title}</h3>
@@ -60,7 +71,7 @@ export default function ProjectCard({title, description, date, linkTo, imageLink
                     </div>
                 </div>
                 }
-                {!isCollapsed &&
+                <div className={`projectCardCollapse ${isCollapsed ? "collapsed" : ""}`}>
                 <div className="projectCardBody">
                     <p>{description}</p>
                     {imageLinks?.length && 
@@ -99,7 +110,8 @@ export default function ProjectCard({title, description, date, linkTo, imageLink
                         fontSize: "1rem", overflow: "hidden", 
                         textOverflow: "ellipsis", whiteSpace: "nowrap",
                         maxWidth: 200}}><a href={linkTo}>🔗 {linkTo}</a></p>}
-                </div>}
+                </div>
+                </div>
             </div>
             </div>
         </div>
