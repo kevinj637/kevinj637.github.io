@@ -8,6 +8,7 @@ export default function ProjectCard({title, description, date, linkTo, imageLink
   const [currentIndex, setCurrentIndex] = useState(0);
   const [nextIndex, setNextIndex] = useState(1);
   const [isFading, setIsFading] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(true);
   const distanceX = (Math.random() * -180 - 90) * (Math.round(Math.random()) * -2 + 1);
   const distanceY = (Math.random() - 0.5) * 150;
   const hoverType = Math.floor(Math.random() * 3)
@@ -41,7 +42,9 @@ export default function ProjectCard({title, description, date, linkTo, imageLink
             <div className={`projectCloud logo 
                 ${hoverType == 0 ? "projectCloudHover" : (hoverType == 1 ? "projectCloudHover2" : "projectCloudHover3")}`}>
             <p className="projectCardDate" style={{color: titleColour}}><b>{date}</b></p>
-            <div className="projectCard" style={{backgroundColor: backgroundColour}}>
+            <div className="projectCard" style={{backgroundColor: backgroundColour}}
+                onMouseEnter={() => setIsCollapsed(false)}
+                onMouseLeave={() => setIsCollapsed(true)}>
                 {linkTo && 
                 <a href={linkTo}>
                     <div className="projectCardTitle" style={{backgroundColor: titleColour}}>
@@ -57,43 +60,46 @@ export default function ProjectCard({title, description, date, linkTo, imageLink
                     </div>
                 </div>
                 }
-                <p>{description}</p>
-                {imageLinks?.length && 
-                <div>
-                    <div className="projectImageContainer" onClick={() => window.location.href = imageLinks[currentIndex]}>
-                        <img src={imageLinks[currentIndex]} 
-                        className="projectImage baseImage"
-                        alt={imageLinks[nextIndex]}>
-                        </img>
-                        <img src={imageLinks[nextIndex]} 
-                        className={`projectImage overlayImage ${isFading? "active" : ""}`}>
-                        </img>
-                    </div>
+                {!isCollapsed &&
+                <div className="projectCardBody">
+                    <p>{description}</p>
+                    {imageLinks?.length && 
+                    <div>
+                        <div className="projectImageContainer" onClick={() => window.location.href = imageLinks[currentIndex]}>
+                            <img src={imageLinks[currentIndex]} 
+                            className="projectImage baseImage"
+                            alt={imageLinks[nextIndex]}>
+                            </img>
+                            <img src={imageLinks[nextIndex]} 
+                            className={`projectImage overlayImage ${isFading? "active" : ""}`}>
+                            </img>
+                        </div>
+                    </div>}
+                    {videoLink && 
+                    <div className="baseVideo">
+                        <video src={videoLink} 
+                        onClick={() => window.location.href = videoLink}
+                        autoPlay muted loop>
+                        </video>
+                    </div>}
+                    {attachDocument && 
+                    <div style={{ position: "relative" }}>
+                        <embed
+                            src={`${attachDocument}#zoom=page-width`}
+                            type="application/pdf"
+                            className="projectDocument"
+                        />
+                        <div className="documentLinkPadding"
+                        style={{backgroundColor: titleColour}}>
+                            <a href={attachDocument}>📖 View Document</a>
+                        </div>
+                    </div>}
+                    <br />
+                    {linkTo && <p className="projectCardLink" style={{ 
+                        fontSize: "1rem", overflow: "hidden", 
+                        textOverflow: "ellipsis", whiteSpace: "nowrap",
+                        maxWidth: 200}}><a href={linkTo}>🔗 {linkTo}</a></p>}
                 </div>}
-                {videoLink && 
-                <div className="baseVideo">
-                    <video src={videoLink} 
-                    onClick={() => window.location.href = videoLink}
-                    autoPlay muted loop>
-                    </video>
-                </div>}
-                {attachDocument && 
-                <div style={{ position: "relative" }}>
-                    <embed
-                        src={`${attachDocument}#zoom=page-width`}
-                        type="application/pdf"
-                        className="projectDocument"
-                    />
-                    <div className="documentLinkPadding"
-                    style={{backgroundColor: titleColour}}>
-                        <a href={attachDocument}>📖 View Document</a>
-                    </div>
-                </div>}
-                <br />
-                {linkTo && <p className="projectCardLink" style={{ 
-                    fontSize: "1rem", overflow: "hidden", 
-                    textOverflow: "ellipsis", whiteSpace: "nowrap",
-                    maxWidth: 200}}><a href={linkTo}>🔗 {linkTo}</a></p>}
             </div>
             </div>
         </div>
