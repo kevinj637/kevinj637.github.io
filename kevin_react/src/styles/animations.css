@@ -27,6 +27,17 @@
   margin: 0;
   font-size: 2rem;
   line-height: 1.1;
+
+  /* Opt out of the global 3D box: the name is not a box. */
+  background: none;
+  padding: 0;
+  color: forestgreen;
+}
+
+/* Remove the box's side/top faces for the name heading. */
+.myName h1::before,
+.myName h1::after {
+  content: none;
 }
 
 @media (prefers-reduced-motion: no-preference) {

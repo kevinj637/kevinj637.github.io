@@ -47,7 +47,7 @@ h1 {
   display: inline-block;
   padding: 0.4em 0.6em;
   background: #0a0a0a;        /* front face: (near) black */
-  color: #fff;
+  color: #ff0;
 }
 
 /* right side face */
