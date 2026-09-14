@@ -71,6 +71,7 @@ export default function Home() {
           </div>
           
           <div className="bg-grass">
+            <div className="bg-haze"></div>
             <p className="approvedMessage">
               This message was approved by Kevin Jiang 👍
             </p>

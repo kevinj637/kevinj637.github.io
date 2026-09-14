@@ -118,8 +118,8 @@
 .bg-grass {
   position: relative;
   z-index: 1;
-  min-height: 200px;
-  margin-top: 50px;
+  min-height: 100px;
+  margin-top: 150px;
   margin-left: -50px;
   margin-right: -50px;
   margin-bottom: -50px;
@@ -136,4 +136,25 @@
     margin-right: 0;
     margin-bottom: 0;
   }
+}
+
+/* Option 4: soft "misty horizon" haze band pinned to the bottom of the
+   viewport. Fades from transparent (top) into the grass green (bottom), so
+   clouds drifting low dissolve into the haze instead of touching the ground.
+   Lives in the fixed .bg-cloud-container and paints above the clouds. */
+.bg-haze {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 100%;
+  width: 100%;
+  height: 180px;
+  background: linear-gradient(
+    to bottom,
+    rgba(135, 206, 250, 0.01) 0%,
+    rgba(135, 206, 250, 1.00) 50%,
+    rgba(135, 206, 250, 1.00) 100%
+  );
+  z-index: 2;
+  pointer-events: none;
 }
