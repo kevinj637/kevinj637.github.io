@@ -3,6 +3,7 @@ import '@styles/animations.css'
 import '@styles/projectCard.css'
 import '@styles/welcome.css'
 import '@styles/bg-clouds.css'
+import '@styles/contact.css'
 import { projectCardData } from '@/markdowns/projectCard'
 import { skillsCardData } from '@/markdowns/skills'
 import ProjectCard from '@/components/projectCard'
@@ -24,12 +25,12 @@ export default function Home() {
             <WelcomeCard />
           </div>
           <div>
-            <h1>Experiences</h1>
+            <h1>EXPERIENCES</h1>
             <p>Explore the markers to see more about me!</p>
             <Map />
           </div>
           <div>
-            <h1>Projects</h1>
+            <h1>PROJECTS</h1>
             <ProjectCard {...projectCardData.Website}/>
             <ProjectCard {...projectCardData.SOACompetition2025} />
             <ProjectCard {...projectCardData.UTRAHacks2025}/>
@@ -40,7 +41,7 @@ export default function Home() {
             <ProjectCard {...projectCardData.MyFirstGame}/>
           </div>
           <div>
-            <h1>Skills</h1>
+            <h1>SKILLS</h1>
             <SkillsGrid data={skillsCardData.language} />
             <SkillsGrid data={skillsCardData.backend} />
             <SkillsGrid data={skillsCardData.frontend} />
@@ -49,13 +50,13 @@ export default function Home() {
           </div>
 
           <div>
-            <h1>Resumé</h1>
+            <h1>RESUMÉ</h1>
             <Resume />
           </div>
 
 
           <div>
-            <h1>Contact</h1>
+            <h1>CONTACT</h1>
             <p>Feel free to reach out!</p>
             <p>Currently open to work and actively searching for new opportunities :)</p>
             <div className='contactWrapper'>
@@ -69,7 +70,7 @@ export default function Home() {
             </div>
           </div>
           
-          <p>
+          <p className="approvedMessage">
             <br></br>
             <br></br>
             This message was approved by Kevin Jiang 👍
