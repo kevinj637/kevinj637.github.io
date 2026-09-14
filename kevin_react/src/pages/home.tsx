@@ -70,11 +70,11 @@ export default function Home() {
             </div>
           </div>
           
-          <p className="approvedMessage">
-            <br></br>
-            <br></br>
-            This message was approved by Kevin Jiang 👍
-          </p>
+          <div className="bg-grass">
+            <p className="approvedMessage">
+              This message was approved by Kevin Jiang 👍
+            </p>
+          </div>
     
     
     

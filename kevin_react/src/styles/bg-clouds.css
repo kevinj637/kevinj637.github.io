@@ -110,3 +110,30 @@
   aspect-ratio: 937 / 525;
   animation: bg-cloud2-movement 120s linear -10s infinite reverse;
 }
+
+/* Opaque grass "ground": full-width strip in normal flow at the bottom of
+   the PAGE (not the viewport), so it only appears when scrolled to the end.
+   Negative margins break out of #root's 50px padding to span edge-to-edge.
+   No rounded corners — reads as unbounded ground. */
+.bg-grass {
+  position: relative;
+  z-index: 1;
+  min-height: 200px;
+  margin-top: 50px;
+  margin-left: -50px;
+  margin-right: -50px;
+  margin-bottom: -50px;
+  background-color: #4a9c2d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* On small screens #root has no padding, so no breakout is needed. */
+@media (max-width: 600px) {
+  .bg-grass {
+    margin-left: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+  }
+}

@@ -129,10 +129,3 @@
   color: #888;
 }
 
-/* Grass-green background for the final approval message. */
-.approvedMessage {
-  background-color: #4a9c2d;
-  color: #fff;
-  padding: 0.75em 1em;
-  border-radius: 8px;
-}
