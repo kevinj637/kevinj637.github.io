@@ -82,6 +82,7 @@
   height: 90%;
   border: none;
   border-radius: 20px;
+  margin-top: 10px;
   padding: -5px;
 }
 
@@ -95,11 +96,16 @@
 }
 
 .resumeLink {
-  margin-top: 8px;
+  margin-top: 12px;
   border-radius: 16px;
   padding: 12px;
   margin: auto;
-  width: 240px;
+  width: fit-content;
+  max-width: 100%;
+}
+
+.resumeLink a {
+  white-space: nowrap;
 }
 
 @keyframes logo-spin {

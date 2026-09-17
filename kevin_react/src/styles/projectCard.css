@@ -172,7 +172,12 @@
   border-radius: 16px;
   padding: 12px;
   margin-left: auto;
-  width: 200px;
+  width: fit-content;
+  max-width: 100%;
+}
+
+.documentLinkPadding a {
+  white-space: nowrap;
 }
 
 /* Link line: pushed right on desktop */
