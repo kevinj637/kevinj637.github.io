@@ -39,7 +39,7 @@
 }
 
 .bg-cloud1 {
-  background-image: url("@/assets/clouds/cloud1.svg");
+  background-image: url("@/assets/clouds/cloud1.webp");
   top: 100px;
   width: 242px;
   aspect-ratio: 726 / 547;
@@ -47,7 +47,7 @@
 }
 
 .bg-cloud2 {
-  background-image: url("@/assets/clouds/cloud2.svg");
+  background-image: url("@/assets/clouds/cloud2.webp");
   top: 700px;
   width: 427px;
   aspect-ratio: 1280 / 486;
@@ -55,7 +55,7 @@
 }
 
 .bg-cloud3 {
-  background-image: url("@/assets/clouds/cloud3.svg");
+  background-image: url("@/assets/clouds/cloud3.webp");
   top: 500px;
   width: 156px;
   aspect-ratio: 469 / 272;
@@ -63,7 +63,7 @@
 }
 
 .bg-cloud4 {
-  background-image: url("@/assets/clouds/cloud4.svg");
+  background-image: url("@/assets/clouds/cloud4.webp");
   top: 300px;
   width: 164px;
   aspect-ratio: 493 / 251;
@@ -71,7 +71,7 @@
 }
 
 .bg-cloud5 {
-  background-image: url("@/assets/clouds/cloud5.svg");
+  background-image: url("@/assets/clouds/cloud5.webp");
   top: 500px;
   left: 400px;
   width: 329px;
@@ -80,7 +80,7 @@
 }
 
 .bg-cloud6 {
-  background-image: url("@/assets/clouds/cloud6.svg");
+  background-image: url("@/assets/clouds/cloud6.webp");
   top: 600px;
   width: 353px;
   aspect-ratio: 1060 / 607;
@@ -88,7 +88,7 @@
 }
 
 .bg-cloud7 {
-  background-image: url("@/assets/clouds/cloud7.svg");
+  background-image: url("@/assets/clouds/cloud7.webp");
   top: 600px;
   width: 139px;
   aspect-ratio: 417 / 301;
@@ -96,7 +96,7 @@
 }
 
 .bg-cloud8 {
-  background-image: url("@/assets/clouds/cloud8.svg");
+  background-image: url("@/assets/clouds/cloud8.webp");
   top: 0;
   width: 308px;
   aspect-ratio: 924 / 479;
@@ -104,7 +104,7 @@
 }
 
 .bg-cloud9 {
-  background-image: url("@/assets/clouds/cloud9.svg");
+  background-image: url("@/assets/clouds/cloud9.webp");
   top: 650px;
   width: 312px;
   aspect-ratio: 937 / 525;
