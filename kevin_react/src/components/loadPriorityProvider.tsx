@@ -1,57 +1,60 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
-  IDLE_INDEX,
-  LOAD_GROUPS,
   LoadPriorityContext,
   type LoadGroup,
+  type LoadPhase,
   type LoadPriorityValue,
 } from "./loadPriority";
 
-// Per-group safety timeout. If a group hasn't reported done within this
-// window (slow network, a broken asset that never fires load/error, a group
-// that never mounts), we advance anyway so lower-priority groups are never
-// permanently starved.
-const GROUP_TIMEOUT_MS = 8000;
+// If the backgrounds haven't reported loaded within this window (slow network,
+// a broken asset that never fires load/error), advance to the content phase
+// anyway so content images are never permanently blocked.
+const BACKGROUNDS_TIMEOUT_MS = 8000;
 
 // Hard cap on how long we wait for the page to be "ready" before we start
 // loading media anyway (e.g. if the load event is delayed by a slow font).
 const READY_FALLBACK_MS = 3000;
 
 /**
- * Sequences the media groups Backgrounds -> Projects -> Resume -> Maps, but
- * only AFTER the page is interactive (text painted + scripts executed). While
- * idle, activeIndex is IDLE_INDEX so no group loads and the critical path
- * stays uncontended. See ./loadPriority.ts for the shared hook/types.
+ * Drives the phases idle -> backgrounds -> content.
+ *
+ * - idle: nothing loads until the page is interactive (text painted + scripts
+ *   executed).
+ * - backgrounds: released on page-ready; only the cloud backgrounds load.
+ * - content: released once backgrounds finish (or time out); projects/résumé/
+ *   maps all load normally, with projects hinted high priority.
+ *
+ * See ./loadPriority.ts for the shared hook/types.
  */
 export function LoadPriorityProvider({ children }: { children: React.ReactNode }) {
-  const [activeIndex, setActiveIndex] = useState(IDLE_INDEX);
-  // Guard so each group only advances the queue once.
-  const doneRef = useRef<Set<LoadGroup>>(new Set());
+  const [phase, setPhase] = useState<LoadPhase>("idle");
+  const backgroundsDoneRef = useRef(false);
 
-  const advance = useCallback((fromIndex: number) => {
-    setActiveIndex((current) => (current === fromIndex ? current + 1 : current));
+  const markDone = useCallback((group: LoadGroup) => {
+    // Only the backgrounds group gates a phase transition.
+    if (group !== "backgrounds" || backgroundsDoneRef.current) return;
+    backgroundsDoneRef.current = true;
+    setPhase((current) => (current === "backgrounds" ? "content" : current));
   }, []);
 
-  // Release the FIRST media group only once the page is ready: the component
-  // tree has mounted (text is in the DOM) and the browser has either fired
-  // `load` (scripts/critical resources done) or gone idle. This is what makes
-  // the page "ready when text + scripts are loaded", then stream media after.
+  // idle -> backgrounds: release once the page is ready (mounted + load event
+  // or browser idle). This is what keeps the critical path uncontended and
+  // makes the page interactive before any media fetches.
   useEffect(() => {
     let released = false;
     const release = () => {
       if (released) return;
       released = true;
-      setActiveIndex((current) => (current === IDLE_INDEX ? 0 : current));
+      setPhase((current) => (current === "idle" ? "backgrounds" : current));
     };
 
     const idleWin = window as typeof window & {
       requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number;
+      cancelIdleCallback?: (id: number) => void;
     };
 
     let idleId: number | undefined;
     const onReady = () => {
-      // Prefer idle time so media never competes with post-load work; fall
-      // back to a direct release where requestIdleCallback is unavailable.
       if (idleWin.requestIdleCallback) {
         idleId = idleWin.requestIdleCallback(release, { timeout: READY_FALLBACK_MS });
       } else {
@@ -64,7 +67,6 @@ export function LoadPriorityProvider({ children }: { children: React.ReactNode }
     } else {
       window.addEventListener("load", onReady, { once: true });
     }
-    // Absolute backstop so media always eventually loads.
     const fallback = window.setTimeout(release, READY_FALLBACK_MS);
 
     return () => {
@@ -76,30 +78,14 @@ export function LoadPriorityProvider({ children }: { children: React.ReactNode }
     };
   }, []);
 
-  const markDone = useCallback(
-    (group: LoadGroup) => {
-      if (doneRef.current.has(group)) return;
-      doneRef.current.add(group);
-      const index = LOAD_GROUPS.indexOf(group);
-      advance(index);
-    },
-    [advance]
-  );
-
-  // Safety net: never let the active group block the queue forever. Only runs
-  // once media loading has started (activeIndex >= 0); stays dormant while
-  // idle so we don't burn the timeout before the page is even ready.
+  // backgrounds -> content: never let a stalled background block content.
   useEffect(() => {
-    if (activeIndex < 0 || activeIndex >= LOAD_GROUPS.length) return;
-    const group = LOAD_GROUPS[activeIndex];
-    const timer = window.setTimeout(() => markDone(group), GROUP_TIMEOUT_MS);
+    if (phase !== "backgrounds") return;
+    const timer = window.setTimeout(() => markDone("backgrounds"), BACKGROUNDS_TIMEOUT_MS);
     return () => window.clearTimeout(timer);
-  }, [activeIndex, markDone]);
+  }, [phase, markDone]);
 
-  const value = useMemo<LoadPriorityValue>(
-    () => ({ activeIndex, markDone }),
-    [activeIndex, markDone]
-  );
+  const value = useMemo<LoadPriorityValue>(() => ({ phase, markDone }), [phase, markDone]);
 
   return (
     <LoadPriorityContext.Provider value={value}>

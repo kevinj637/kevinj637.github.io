@@ -3,41 +3,50 @@ import { createContext, useCallback, useContext, useRef } from "react";
 /**
  * Coordinated, prioritized media loading — shared types, context and hook.
  *
- * NO media (images, résumé PDF, map imagery, background clouds) begins
- * fetching until the page itself is "ready": the HTML/text is painted and
- * the scripts have finished executing (see LoadPriorityProvider). This keeps
- * the critical path — markup, CSS, JS, fonts — uncontended so the page is
- * interactive as fast as possible.
+ * Loading happens in three phases:
  *
- * Once the page is ready, media loads in this strict order:
+ *   1. "idle"        — NO media loads. The page finishes its critical path
+ *                      (HTML/text painted, scripts executed, fonts). This is
+ *                      the window that makes the page interactive fastest.
+ *   2. "backgrounds" — only the decorative background clouds load.
+ *   3. "content"     — everything else (projects, résumé, maps) is released
+ *                      AT ONCE and loads normally via the browser. Projects
+ *                      are hinted as high priority (fetchpriority="high") so
+ *                      they win the race, while résumé/maps stay normal/lazy.
  *
- *   Backgrounds -> Projects -> Resume -> Maps
- *
- * i.e. the decorative background clouds first, then the content
- * images/PDFs. A group is only cleared to start fetching once every
- * higher-priority group has reported done.
+ * So the effective order is: page ready -> backgrounds -> (all remaining
+ * images at once, projects first). We no longer strictly serialize
+ * projects/résumé/maps — once backgrounds are in, normal browser loading
+ * takes over with projects prioritized.
  *
  * Because CSS `background-image` cannot use `loading="lazy"` and Leaflet
- * popups fetch on open, gating is driven in JS rather than relying on
- * native lazy-loading alone.
+ * popups fetch on open, the background gating is driven in JS rather than
+ * relying on native lazy-loading alone.
  *
  * The provider component lives in ./loadPriorityProvider.tsx; this module
  * holds the non-component exports (types, context, hook) so React Fast
  * Refresh stays happy.
  */
 
-export const LOAD_GROUPS = ["backgrounds", "projects", "resume", "maps"] as const;
-export type LoadGroup = (typeof LOAD_GROUPS)[number];
+// Media groups. "backgrounds" is the only gated group; every other group is
+// "content" and is released together in the final phase.
+export type LoadGroup = "backgrounds" | "projects" | "resume" | "maps";
 
-// activeIndex value used before the page is "ready". While the coordinator
-// sits here, no group's `canLoad` is true, so nothing fetches and the browser
-// can finish the critical path (text + scripts) unhindered.
-export const IDLE_INDEX = -1;
+// Loading phases, in order.
+export const LOAD_PHASES = ["idle", "backgrounds", "content"] as const;
+export type LoadPhase = (typeof LOAD_PHASES)[number];
+
+// The phase during which each group is first allowed to load.
+const GROUP_PHASE: Record<LoadGroup, LoadPhase> = {
+  backgrounds: "backgrounds",
+  projects: "content",
+  resume: "content",
+  maps: "content",
+};
 
 export interface LoadPriorityValue {
-  // Index of the group currently allowed to load.
-  activeIndex: number;
-  // Mark a group as finished, advancing the queue.
+  phase: LoadPhase;
+  // Mark a group as finished, advancing the phase when appropriate.
   markDone: (group: LoadGroup) => void;
 }
 
@@ -47,10 +56,12 @@ export const LoadPriorityContext = createContext<LoadPriorityValue | null>(null)
  * Hook used by each media group.
  *
  * Returns:
- *  - `canLoad`: true once every higher-priority group is done, i.e. it's this
- *    group's turn to start fetching its media.
+ *  - `canLoad`: true once the page has reached this group's phase, i.e. it may
+ *    start fetching its media.
  *  - `reportLoaded`: call when this group's media has finished loading so the
- *    next group can begin.
+ *    coordinator can advance to the next phase (only backgrounds gate here).
+ *  - `priority`: a hint for the group's own use. Projects get "high" so they
+ *    can set fetchpriority="high"; other content groups get "auto".
  *
  * If there is no provider (e.g. a component rendered in isolation / tests),
  * `canLoad` defaults to true so media still loads normally.
@@ -65,12 +76,15 @@ export function useLoadGate(group: LoadGroup) {
     ctx?.markDone(group);
   }, [ctx, group]);
 
+  const priority: "high" | "auto" = group === "projects" ? "high" : "auto";
+
   if (!ctx) {
-    return { canLoad: true, reportLoaded };
+    return { canLoad: true, reportLoaded, priority };
   }
 
-  const myIndex = LOAD_GROUPS.indexOf(group);
-  const canLoad = ctx.activeIndex >= myIndex;
+  const myPhase = GROUP_PHASE[group];
+  const phaseIndex = LOAD_PHASES.indexOf(ctx.phase);
+  const canLoad = phaseIndex >= LOAD_PHASES.indexOf(myPhase);
 
-  return { canLoad, reportLoaded };
+  return { canLoad, reportLoaded, priority };
 }

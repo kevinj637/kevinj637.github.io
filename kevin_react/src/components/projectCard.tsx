@@ -10,15 +10,10 @@ export default function ProjectCard({title, description, date, linkTo, imageLink
   const [nextIndex, setNextIndex] = useState(1);
   const [isFading, setIsFading] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(true);
-  // Projects are the highest-priority media group: they may start fetching
-  // immediately, and once a card's first image settles we release the queue
-  // so the résumé (next group) can begin loading.
-  const { canLoad, reportLoaded } = useLoadGate("projects");
-  // A card with no images can't gate the queue on an image load, so it
-  // releases as soon as it is allowed to load.
-  useEffect(() => {
-    if (canLoad && !imageLinks?.length) reportLoaded();
-  }, [canLoad, imageLinks?.length, reportLoaded]);
+  // Projects load in the "content" phase (after page-ready + backgrounds),
+  // alongside résumé and maps. Among that content, projects are hinted as
+  // high priority so the browser fetches their images first.
+  const { canLoad, priority } = useLoadGate("projects");
   // Touch / no-hover devices: hover can't drive the expand, so tap does.
   const isTouch = typeof window !== "undefined" &&
     window.matchMedia?.("(hover: none)").matches;
@@ -91,12 +86,12 @@ export default function ProjectCard({title, description, date, linkTo, imageLink
                             className="projectImage baseImage"
                             alt={imageLinks[nextIndex]}
                             decoding="async"
-                            onLoad={reportLoaded}
-                            onError={reportLoaded}>
+                            fetchPriority={priority}>
                             </img>
                             <img src={canLoad ? imageLinks[nextIndex] : undefined} 
                             className={`projectImage overlayImage ${isFading? "active" : ""}`}
-                            decoding="async">
+                            decoding="async"
+                            fetchPriority={priority}>
                             </img>
                         </div>
                     </div>}
