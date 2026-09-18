@@ -15,3 +15,20 @@
 .welcomeCard.show {
   transform: translateX(-50%);
 }
+
+/*
+ * Mobile override — applies at max-width: 600px (the single Mobile_Breakpoint).
+ * Scaling approach: the desktop base rule caps .welcomeCard at max-width: 700px,
+ * which can exceed a small-phone viewport. Here the cap is re-based to the
+ * viewport itself (max-width: 100vw minus side gutters via calc) and the width
+ * is allowed to fill the available space, so the card fits without producing
+ * horizontal overflow. Placed after the base rule so equal-specificity
+ * selectors resolve to this value below 600px and to the desktop value above it.
+ * (Requirements 4.7, 1.5, 6.2, 6.3)
+ */
+@media (max-width: 600px) {
+  .welcomeCard {
+    width: auto;
+    max-width: calc(100vw - 20px);
+  }
+}

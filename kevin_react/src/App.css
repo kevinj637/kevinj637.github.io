@@ -113,13 +113,25 @@
   color: #888;
 }
 
-/* Consolidated small-screen (phone) overrides. Placed at the end so these
-   rules come after their base rules in source order and win on equal
-   specificity. */
+/* Consolidated small-screen (phone) overrides — applies at max-width: 600px.
+   Small-screen scaling approach: this single trailing media query is the only
+   breakpoint in this file. It "scales everything down" rather than redesigning
+   the layout — the same DOM is reflowed by removing the desktop root padding
+   (leaving <=16px per side so content fits a 320px viewport), padding the top
+   so content clears the fixed name cloud, and re-bounding the fixed-size embeds
+   (map, resume) to widths that fit the viewport and heights sized in vh so they
+   scale with the screen. Placed at the end so these rules come after their base
+   rules in source order and win on equal specificity; above 600px none of these
+   rules match and the desktop layout is unchanged. */
 @media (max-width: 600px) {
   #root {
-    padding: 0px;
-    /* Pad the top on small screens so content clears the fixed name cloud. */
+    /* Horizontal padding within the 0–16px band so content fits a 320px
+       viewport with no horizontal overflow. */
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-bottom: 0px;
+    /* Pad the top on small screens so content clears the fixed name cloud
+       (no overlap with the first page content). */
     padding-top: 120px;
   }
 
@@ -129,8 +141,25 @@
     object-fit: cover;
   }
 
+  /* Re-bound the map embed to fit the viewport width and use a viewport-relative
+     height within the 40–60vh band. */
+  .mapSettings {
+    width: 100%;
+    max-width: 100vw;
+    height: 50vh;
+  }
+
+  /* Re-bound the resume embed to fit the viewport width and use a
+     viewport-relative height within the 60–80vh band. */
+  .resumeCloud {
+    width: 100%;
+    max-width: 100vw;
+    height: 70vh;
+  }
+
   /* On small screens the PDF is rendered page-height (see resume.tsx) and
-     we give it a bit more room so it stays readable. */
+     we give it a bit more room so it stays readable while fitting inside the
+     re-bounded .resumeCloud. */
   .resumeFrame {
     width: 100%;
     height: 85%;

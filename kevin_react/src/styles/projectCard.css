@@ -9,15 +9,6 @@
   background-position: center;
 }
 
-/* Mobile / small screens */
-@media (max-width: 600px) {
-  .projectCloud {
-    background-image: none;
-    width: 100%;
-    padding-right: 0; /* optional, looks cleaner on mobile */
-  }
-}
-
 .projectCard {
   max-width: 600px;
   margin: auto;
@@ -81,12 +72,28 @@
   transition: all 1.2s ease;
 }
 
-/* Mobile / small screens */
+/*
+ * Small-screen overrides for the project card. Applies at max-width: 600px
+ * (the single Mobile_Breakpoint for the site). Scaling approach: instead of a
+ * mobile redesign, the desktop card is reflowed into one centered vertical
+ * column — title, date, and link lines are full width and center-aligned
+ * rather than pushed to the right — and the decorative .projectCloud
+ * background image is dropped so the card renders cleanly and stays within
+ * the viewport on narrow phones.
+ */
 @media (max-width: 600px) {
+  /* Drop the decorative cloud background; let the card span the column width. */
+  .projectCloud {
+    background-image: none;
+    width: 100%;
+    padding-right: 0;
+  }
+
+  /* Single centered column: title fills the width and centers. */
   .innerProjectCardTitle {
     width: 100%;
     margin: auto;
-    padding-right: 0; /* optional, looks cleaner on mobile */
+    padding-right: 0;
     text-align: center;
   }
 
@@ -98,7 +105,7 @@
     text-align: center;
   }
 
-  /* Center the link line on mobile instead of pushing it right */
+  /* Center the link line on mobile instead of pushing it right. */
   .projectCardLink {
     margin-left: auto;
     margin-right: auto;

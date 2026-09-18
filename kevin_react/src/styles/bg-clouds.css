@@ -129,7 +129,14 @@
   justify-content: center;
 }
 
-/* On small screens #root has no padding, so no breakout is needed. */
+/* Small-screen overrides — applies at max-width: 600px (the single mobile
+   breakpoint). Scaling approach: the fixed, overflow:hidden .bg-cloud-container
+   above already clips the off-screen cloud animation, so no cloud change is
+   needed here. On small screens #root drops its 50px padding, so the desktop
+   negative-margin breakout on .bg-grass (which spans edge-to-edge on desktop)
+   is no longer needed and would instead push the grass past the viewport edge
+   and create horizontal overflow. This block neutralizes those negative
+   margins (left/right/bottom -> 0) so the grass stays within the viewport. */
 @media (max-width: 600px) {
   .bg-grass {
     margin-left: 0;
