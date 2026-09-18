@@ -12,6 +12,11 @@
 //   - If the file hash doesn't match (new or edited image) or the settings
 //     changed (e.g. a new MAX_WIDTH), we (re)optimize and update the manifest.
 //
+// Resize policy: images are re-compressed at a fixed quality but NOT resized by
+// default. Resizing to MAX_WIDTH kicks in only as a fallback — when
+// re-compression alone already saves more than RESIZE_TRIGGER_RATIO (30%),
+// which flags a heavy source worth also downscaling.
+//
 // Deploy flow context: the tracked, deployed images live at the REPO ROOT
 // public/ (kevin_react/public is a git-ignored Vite staging dir and is empty
 // in CI). So this script targets the root public/ by default. The manifest is
@@ -59,9 +64,15 @@ const MAX_WIDTH = 1600;
 const JPEG_QUALITY = 80;
 const PNG_QUALITY = 80;
 
-// Bump this (or it changes automatically with the knobs above) to force a
-// re-optimize of everything. Encoded into each manifest entry.
-const SETTINGS_SIG = `w${MAX_WIDTH}-jq${JPEG_QUALITY}-pq${PNG_QUALITY}-v1`;
+// Resize policy: by default we do NOT downscale — we just re-compress at the
+// quality above. But if re-compression ALONE already shrinks the file by more
+// than this ratio, the source is heavy/wasteful, so we ALSO downscale it to
+// MAX_WIDTH (when it's wider than that) for an extra win. 0.30 = 30%.
+const RESIZE_TRIGGER_RATIO = 0.30;
+
+// Bump the trailing version to force a re-optimize of everything. The knobs
+// above are encoded into each manifest entry so changing them re-processes.
+const SETTINGS_SIG = `w${MAX_WIDTH}-jq${JPEG_QUALITY}-pq${PNG_QUALITY}-rt${RESIZE_TRIGGER_RATIO}-v2`;
 
 const JPEG_EXT = new Set(['.jpg', '.jpeg']);
 const PNG_EXT = new Set(['.png']);
@@ -128,12 +139,12 @@ async function loadManifest() {
   }
 }
 
-// Produce the optimized buffer for a raster file (same format in, same out).
-async function encode(input, ext) {
+// Encode `input` (a raster buffer) at the configured quality, same format in /
+// out. If `resize` is true and the source is wider than MAX_WIDTH, downscale
+// to MAX_WIDTH first.
+async function encodeOnce(input, ext, resize) {
   let pipeline = sharp(input, { failOn: 'error' });
-  const meta = await pipeline.metadata();
-  const willResize = (meta.width ?? 0) > MAX_WIDTH;
-  if (willResize) {
+  if (resize) {
     pipeline = pipeline.resize({ width: MAX_WIDTH, withoutEnlargement: true });
   }
   if (JPEG_EXT.has(ext)) {
@@ -141,7 +152,30 @@ async function encode(input, ext) {
   } else {
     pipeline = pipeline.png({ quality: PNG_QUALITY, compressionLevel: 9, effort: 7 });
   }
-  return { buffer: await pipeline.toBuffer(), willResize };
+  return pipeline.toBuffer();
+}
+
+// Two-pass optimize:
+//   1. Re-compress WITHOUT resizing and measure how much that alone saved.
+//   2. If that saving exceeds RESIZE_TRIGGER_RATIO (and the image is actually
+//      wider than MAX_WIDTH), ALSO downscale and use the resized result.
+// Returns the chosen buffer plus whether it was resized.
+async function encode(input, ext) {
+  const before = input.length;
+  const meta = await sharp(input, { failOn: 'error' }).metadata();
+  const canResize = (meta.width ?? 0) > MAX_WIDTH;
+
+  // Pass 1: compression only.
+  const recompressed = await encodeOnce(input, ext, false);
+  const compressionSaving = before > 0 ? (before - recompressed.length) / before : 0;
+
+  // Pass 2 (fallback): if compression alone was a big win, resize too.
+  if (canResize && compressionSaving > RESIZE_TRIGGER_RATIO) {
+    const resized = await encodeOnce(input, ext, true);
+    return { buffer: resized, willResize: true };
+  }
+
+  return { buffer: recompressed, willResize: false };
 }
 
 async function main() {
