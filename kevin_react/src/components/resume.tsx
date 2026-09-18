@@ -3,7 +3,7 @@ import { useFadeIn } from "./flyIn"
 import { useMediaItem } from "./loadPriority"
 
 const SMALL_SCREEN_QUERY = "(max-width: 600px)";
-const RESUME_PDF = "/resume/KevinJiang_ResumeSpring2026.pdf";
+const RESUME_PDF = "public/resume/KevinJiang_ResumeSept2026.pdf";
 
 export default function Resume() {
     const {flyInRef, isVisible} = useFadeIn();
