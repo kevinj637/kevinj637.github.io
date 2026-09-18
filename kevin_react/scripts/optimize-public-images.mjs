@@ -2,7 +2,7 @@
 // preserving filenames and extensions so existing references
 // (e.g. "/public/map/Foo.jpg") keep working, including odd casing like ".JPG".
 //
-// Idempotency is guaranteed by a hash manifest (public/.image-optim.json):
+// Idempotency is guaranteed by a hash manifest (kevin_react/src/json/.image-optim.json):
 //   - For each image we record the SHA-256 of its OPTIMIZED bytes plus a
 //     signature of the settings used to produce them.
 //   - On a later run, if the file on disk already hashes to that recorded
@@ -14,13 +14,15 @@
 //
 // Deploy flow context: the tracked, deployed images live at the REPO ROOT
 // public/ (kevin_react/public is a git-ignored Vite staging dir and is empty
-// in CI). So this script targets the root public/ by default, and the manifest
-// lives there too — a tracked location, so it persists across CI runs.
+// in CI). So this script targets the root public/ by default. The manifest is
+// kept separately at kevin_react/src/json/.image-optim.json — a tracked
+// location that persists across CI runs (root public/ is fine too, but keeping
+// build metadata under src/ keeps the deployed public/ tree clean).
 //
 // Usage (from kevin_react/):  node scripts/optimize-public-images.mjs
 // Override the target dir:    IMAGE_DIR=/some/path node scripts/optimize-public-images.mjs
 
-import { readdir, stat, readFile, writeFile } from 'node:fs/promises';
+import { readdir, stat, readFile, writeFile, mkdir } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -28,12 +30,18 @@ import sharp from 'sharp';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// Default target: repo-root public/. kevin_react/ is one level below the root.
-const REPO_ROOT = path.resolve(__dirname, '../..');
+// Layout: this script lives in kevin_react/scripts/. kevin_react/ is one level
+// below the repo root.
+const KEVIN_REACT = path.resolve(__dirname, '..');
+const REPO_ROOT = path.resolve(KEVIN_REACT, '..');
+
+// Default target: repo-root public/ (the tracked, deployed images).
 const IMAGE_DIR = process.env.IMAGE_DIR
   ? path.resolve(process.env.IMAGE_DIR)
   : path.join(REPO_ROOT, 'public');
-const MANIFEST_PATH = path.join(IMAGE_DIR, '.image-optim.json');
+
+// Manifest lives under src/json/ (tracked), separate from the images.
+const MANIFEST_PATH = path.join(KEVIN_REACT, 'src', 'json', '.image-optim.json');
 
 const MAX_WIDTH = 1600;
 const JPEG_QUALITY = 80;
@@ -163,12 +171,14 @@ async function main() {
     }
   }
 
-  // Prune entries for files that no longer exist, then persist.
+  // Prune entries for files that no longer exist, then persist. Ensure the
+  // manifest directory (src/json/) exists first, since it may be brand new.
   const manifestOut = {
     settingsSig: SETTINGS_SIG,
     updatedAt: new Date().toISOString(),
     entries: nextEntries,
   };
+  await mkdir(path.dirname(MANIFEST_PATH), { recursive: true });
   await writeFile(MANIFEST_PATH, JSON.stringify(manifestOut, null, 2) + '\n');
 
   const saved = bytesBefore - bytesAfter;

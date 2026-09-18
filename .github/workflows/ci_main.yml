@@ -47,11 +47,11 @@ jobs:
 
       # Build. optimize-images re-compresses/downscales the tracked raster
       # images at the REPO ROOT public/ in place (that's what actually gets
-      # deployed). It's hash-idempotent via public/.image-optim.json: images
-      # already recorded in the committed manifest are skipped, so this only
-      # does work for images added/changed since the last local optimize+commit.
-      # The optimized bytes are baked into the uploaded artifact below; CI does
-      # not push anything back to the repo.
+      # deployed). It's hash-idempotent via the manifest at
+      # kevin_react/src/json/.image-optim.json: images already recorded there
+      # are skipped, so this only does work for images added/changed since the
+      # last local optimize+commit. The optimized bytes are baked into the
+      # uploaded artifact below; CI does not push anything back to the repo.
       - name: Install dependencies, optimize images, build, move dist to root
         working-directory: ./kevin_react
         run: |
