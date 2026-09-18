@@ -51,7 +51,7 @@ export const projectCardData: Record<string, ProjectCardProps> = {
         imageLinks: ["/projects/FredBot1.png", "/projects/FredBot2.png", "/projects/FredBot3.png", "/projects/FredBot4.png"],
         linkTo: "https://git.uwaterloo.ca/a2/se101-project/-/tree/ae633b8c419b5042090589b12521ba804d662ea5/",
         backgroundColour: "lightYellow",
-        titleColour: "rgba(253, 255, 119, 0.43)",
+        titleColour: "rgba(143, 145, 47, 0.68)",
     },
     VEXRobotics: {
         title: "3388B: Can We Get Much Higher @ VEX Robotics",

@@ -66,7 +66,7 @@ export default function Home() {
           <div>
             <h1>CONTACT</h1>
             <p>Feel free to reach out!</p>
-            <p>Currently open to work and actively searching for new opportunities :)</p>
+            <p>Always actively searching for new opportunities :)</p>
             <div className='contactWrapper'>
               <ul className='contactList'>
               <li><a href="mailto:kxjiang@uwaterloo.ca">→ kxjiang@uwaterloo.ca</a></li>
