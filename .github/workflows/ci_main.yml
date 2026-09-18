@@ -45,17 +45,20 @@ jobs:
         with:
           node-version: 22
 
-      # Build. The optimize-images step downscales/re-compresses raster images
-      # under kevin_react/public IN PLACE before the build. It only runs here in
-      # CI (on a fresh checkout), so full-quality originals stay untouched in the
-      # repo while the deployed artifact ships optimized images.
+      # Build. optimize-images re-compresses/downscales the tracked raster
+      # images at the REPO ROOT public/ in place (that's what actually gets
+      # deployed). It's hash-idempotent via public/.image-optim.json: images
+      # already recorded in the committed manifest are skipped, so this only
+      # does work for images added/changed since the last local optimize+commit.
+      # The optimized bytes are baked into the uploaded artifact below; CI does
+      # not push anything back to the repo.
       - name: Install dependencies, optimize images, build, move dist to root
         working-directory: ./kevin_react
         run: |
           npm install
           npm run optimize-images
           npm run build
-          
+
       - run: cp -r kevin_react/dist/* .
 
       # Upload and deploy
