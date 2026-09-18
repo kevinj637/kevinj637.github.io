@@ -9,11 +9,12 @@ import {
 // If the backgrounds haven't reported loaded within this window (slow network,
 // a broken asset that never fires load/error), advance to the content phase
 // anyway so content images are never permanently blocked.
-const BACKGROUNDS_TIMEOUT_MS = 8000;
+const BACKGROUNDS_TIMEOUT_MS = 10000;
 
-// Hard cap on how long we wait for the page to be "ready" before we start
-// loading media anyway (e.g. if the load event is delayed by a slow font).
-const READY_FALLBACK_MS = 3000;
+// Backstop for starting the backgrounds phase, in case requestIdleCallback
+// never fires (unsupported / perpetually busy main thread). Backgrounds start
+// as soon as the browser goes idle after mount; this is only the safety net.
+const READY_FALLBACK_MS = 4000;
 
 /**
  * Drives the phases idle -> backgrounds -> content.
@@ -37,9 +38,12 @@ export function LoadPriorityProvider({ children }: { children: React.ReactNode }
     setPhase((current) => (current === "backgrounds" ? "content" : current));
   }, []);
 
-  // idle -> backgrounds: release once the page is ready (mounted + load event
-  // or browser idle). This is what keeps the critical path uncontended and
-  // makes the page interactive before any media fetches.
+  // idle -> backgrounds: release as soon as the browser goes idle after this
+  // component has mounted, i.e. once the critical path (text + scripts) is done
+  // and the main thread is free. We deliberately do NOT wait on the `load`
+  // event — nothing has an image src during idle, so backgrounds should start
+  // the moment the page is interactive rather than after any external
+  // subresource settles. Backgrounds always go first; images wait behind them.
   useEffect(() => {
     let released = false;
     const release = () => {
@@ -54,23 +58,14 @@ export function LoadPriorityProvider({ children }: { children: React.ReactNode }
     };
 
     let idleId: number | undefined;
-    const onReady = () => {
-      if (idleWin.requestIdleCallback) {
-        idleId = idleWin.requestIdleCallback(release, { timeout: READY_FALLBACK_MS });
-      } else {
-        release();
-      }
-    };
-
-    if (document.readyState === "complete") {
-      onReady();
-    } else {
-      window.addEventListener("load", onReady, { once: true });
+    if (idleWin.requestIdleCallback) {
+      // Fire on first idle; the timeout guarantees it still runs on a busy page.
+      idleId = idleWin.requestIdleCallback(release, { timeout: READY_FALLBACK_MS });
     }
+    // Backstop for environments without requestIdleCallback.
     const fallback = window.setTimeout(release, READY_FALLBACK_MS);
 
     return () => {
-      window.removeEventListener("load", onReady);
       window.clearTimeout(fallback);
       if (idleId !== undefined && idleWin.cancelIdleCallback) {
         idleWin.cancelIdleCallback(idleId);

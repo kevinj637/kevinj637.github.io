@@ -4,15 +4,20 @@ import '@styles/projectCard.css'
 import '@styles/welcome.css'
 import '@styles/bg-clouds.css'
 import '@styles/contact.css'
+import { lazy, Suspense } from 'react'
 import { projectCardData } from '@/markdowns/projectCard'
 import { skillsCardData } from '@/markdowns/skills'
 import ProjectCard from '@/components/projectCard'
-import Map from '@/components/map'
 import Resume from '@/components/resume'
 import SkillsGrid from '@/components/skillsCard'
 import WelcomeCard from '@/components/welcomeCard'
 import BackgroundClouds from '@/components/backgroundCloud'
 import { LoadPriorityProvider } from '@/components/loadPriorityProvider'
+
+// The map pulls in Leaflet + react-leaflet (~40 KB gzipped) and its CSS. It
+// lives below the fold, so we split it into its own chunk that only downloads
+// when this lazy component renders — keeping the initial script small.
+const Map = lazy(() => import('@/components/map'))
 
 
 export default function Home() {
@@ -28,7 +33,9 @@ export default function Home() {
           <div>
             <h1>EXPERIENCES</h1>
             <p>Explore the markers to see more about me!</p>
-            <Map />
+            <Suspense fallback={<div className="mapSettings" aria-busy="true" />}>
+              <Map />
+            </Suspense>
           </div>
           <div>
             <h1>PROJECTS</h1>
