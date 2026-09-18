@@ -3,15 +3,19 @@ import { createContext, useCallback, useContext, useRef } from "react";
 /**
  * Coordinated, prioritized media loading — shared types, context and hook.
  *
- * All images / PDFs on the page are grouped and loaded in a strict order:
+ * NO media (images, résumé PDF, map imagery, background clouds) begins
+ * fetching until the page itself is "ready": the HTML/text is painted and
+ * the scripts have finished executing (see LoadPriorityProvider). This keeps
+ * the critical path — markup, CSS, JS, fonts — uncontended so the page is
+ * interactive as fast as possible.
  *
- *   Projects -> Resume -> Backgrounds -> Maps
+ * Once the page is ready, media loads in this strict order:
  *
- * A group is only cleared to start fetching its media once every
- * higher-priority group has reported that it is done. This keeps the
- * network busy with the most important assets first (project cards),
- * then the résumé, then the decorative background clouds, and finally
- * the lowest-priority map imagery.
+ *   Backgrounds -> Projects -> Resume -> Maps
+ *
+ * i.e. the decorative background clouds first, then the content
+ * images/PDFs. A group is only cleared to start fetching once every
+ * higher-priority group has reported done.
  *
  * Because CSS `background-image` cannot use `loading="lazy"` and Leaflet
  * popups fetch on open, gating is driven in JS rather than relying on
@@ -22,8 +26,13 @@ import { createContext, useCallback, useContext, useRef } from "react";
  * Refresh stays happy.
  */
 
-export const LOAD_GROUPS = ["projects", "resume", "backgrounds", "maps"] as const;
+export const LOAD_GROUPS = ["backgrounds", "projects", "resume", "maps"] as const;
 export type LoadGroup = (typeof LOAD_GROUPS)[number];
+
+// activeIndex value used before the page is "ready". While the coordinator
+// sits here, no group's `canLoad` is true, so nothing fetches and the browser
+// can finish the critical path (text + scripts) unhindered.
+export const IDLE_INDEX = -1;
 
 export interface LoadPriorityValue {
   // Index of the group currently allowed to load.
