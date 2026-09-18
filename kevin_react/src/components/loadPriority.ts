@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useId, useSyncExternalStore } from "react";
+import { createContext, useCallback, useContext, useEffect, useId } from "react";
 
 /**
  * Coordinated, prioritized media loading — shared types, context and hook.
@@ -68,8 +68,6 @@ export interface LoadPriorityValue {
   isActive: (id: string) => boolean;
   // Item reports it finished (load or error) so the queue can advance.
   reportDone: (id: string) => void;
-  // Subscribe to activation changes (used by useMediaItem).
-  subscribe: (cb: () => void) => () => void;
   // Bump an interruptible item to the front of the pending queue.
   requestPriority: (url: string) => void;
   // Declare how many backgrounds items will register, so the fast path holds
@@ -120,11 +118,9 @@ export function useMediaItem(group: LoadGroup, url: string | undefined) {
     return unregister;
   }, [ctx, id, group, url]);
 
-  const active = useSyncExternalStore(
-    useCallback((cb) => (ctx ? ctx.subscribe(cb) : () => {}), [ctx]),
-    () => (ctx ? ctx.isActive(id) : true),
-    () => true
-  );
+  // The context value changes identity whenever activation changes, so reading
+  // isActive during render re-runs when this item flips active.
+  const active = ctx ? ctx.isActive(id) : true;
 
   const reportDone = useCallback(() => {
     ctx?.reportDone(id);
