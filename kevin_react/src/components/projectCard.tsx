@@ -1,5 +1,5 @@
 import type { ProjectCardProps } from "@/interfaces/projectCard";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useFlyIn } from "./flyIn";
 import { useMediaItem, useRequestPriority } from "./loadPriority";
 import "@/App.css"
@@ -58,11 +58,24 @@ export default function ProjectCard({title, description, date, linkTo, imageLink
   // Touch / no-hover devices: hover can't drive the expand, so tap does.
   const isTouch = typeof window !== "undefined" &&
     window.matchMedia?.("(hover: none)").matches;
-  const distanceX = (Math.random() * -180 - 90) * (Math.round(Math.random()) * -2 + 1);
-  const distanceY = (Math.random() - 0.5) * 150;
-  const hoverType = Math.floor(Math.random() * 3)
+  // Randomized fly-in offset and hover style, computed ONCE per card mount.
+  // Previously these ran on every render with fresh Math.random(): on slow
+  // connections the card re-renders constantly (image onReady, crossfade
+  // ticks), so the --distanceX/--distanceY custom properties changed every
+  // render and the .cloudFlyIn transform kept animating toward a new random
+  // point — the card visibly shook. useRef freezes them for the card's life.
+  const randomRef = useRef<{ distanceX: number; distanceY: number; hoverType: number } | null>(null);
+  if (randomRef.current === null) {
+    randomRef.current = {
+      distanceX: (Math.random() * -180 - 90) * (Math.round(Math.random()) * -2 + 1),
+      distanceY: (Math.random() - 0.5) * 150,
+      hoverType: Math.floor(Math.random() * 3),
+    };
+  }
+  const { distanceX, distanceY, hoverType } = randomRef.current;
 
-  const {flyInRef, isVisible} = useFlyIn();
+  // Two-way fly in/out on scroll.
+  const {flyInRef, isVisible} = useFlyIn(0.2, false);
 
   // Indices of images that have loaded, for cycling the crossfade.
   const loadedIndices = useMemo(
