@@ -59,7 +59,13 @@ jobs:
           npm run optimize-images
           npm run build
 
-      - run: cp -r kevin_react/dist/* .
+      # Publish the fresh build to the repo root. Remove the PREVIOUS build's
+      # output first. Stale and mismatched assets lead to app failing to mount correctly.
+      # Clearing first guarantees the deployed index.html and assets/ are always internally consistent.
+      - name: Publish build to repo root (clean)
+        run: |
+          rm -rf assets index.html
+          cp -r kevin_react/dist/* .
 
       # Upload and deploy
       - uses: actions/upload-pages-artifact@v3
