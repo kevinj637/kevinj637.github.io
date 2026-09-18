@@ -82,23 +82,66 @@
  * the viewport on narrow phones.
  */
 @media (max-width: 600px) {
-  /* Drop the decorative cloud background; let the card span the column width. */
+  /* Drop the decorative cloud background; let the card span the column width
+     and stay horizontally centered within the viewport.
+     NOTE: .projectCloud also carries the .logo class (padding: 1.5em in
+     App.css). Previously only padding-right was zeroed, leaving 1.5em of
+     left padding — that asymmetry is what shifted every card to the right.
+     Zero the horizontal padding on both sides so the card centers.
+     The desktop .projectCloud also stacks padding-bottom: 50px + margin-bottom:
+     100px + the .logo top/bottom padding, which is what spread the cards so
+     far apart vertically. Collapse that extra space on small screens. */
   .projectCloud {
     background-image: none;
     width: 100%;
+    padding-left: 0;
     padding-right: 0;
+    padding-bottom: 0;
+    margin-top: 0;
+    margin-bottom: 16px;
+    margin-left: auto;
+    margin-right: auto;
   }
 
-  /* Single centered column: title fills the width and centers. */
+  /* Center the card within its cloud wrapper and keep the stacked cards tight. */
+  .projectCard {
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 0;
+  }
+
+  /* Single centered column: title fills the width and centers. The title text
+     can be long, so allow it to wrap and break instead of overflowing past
+     the inner div. */
   .innerProjectCardTitle {
     width: 100%;
     margin: auto;
     padding-right: 0;
     text-align: center;
+    overflow-wrap: break-word;
+    word-break: break-word;
   }
 
-  .projectCard {
-    text-align: center;
+  .innerProjectCardTitle h3 {
+    margin: 0;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+
+  /* The desktop hover slides the inner title left by 70px (to reveal the
+     arrow). On small screens the title is full-width and centered, so that
+     shift is what pushes the {title} text out past the right edge of its div.
+     Cancel the slide on small screens so the title stays inside the box.
+     The base .projectCardTitle:hover .innerProjectCardTitle rule appears later
+     in this file, so this override adds the .projectCard ancestor to win on
+     specificity rather than source order. */
+  .projectCard .projectCardTitle:hover .innerProjectCardTitle {
+    transform: none;
+  }
+
+  /* Keep the decorative arrow inside the title box on narrow screens. */
+  .projectCardTitle::after {
+    right: 2%;
   }
 
   .projectCardDate {

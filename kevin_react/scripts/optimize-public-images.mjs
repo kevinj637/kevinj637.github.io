@@ -17,6 +17,10 @@
 // re-compression alone already saves more than RESIZE_TRIGGER_RATIO (30%),
 // which flags a heavy source worth also downscaling.
 //
+// Write policy: the compressed (lossy) result only replaces the original when
+// it is at least MIN_WRITE_SAVING_RATIO (40%) smaller. Smaller wins aren't
+// worth the lossy re-encode, so those files keep their original bytes.
+//
 // Deploy flow context: the tracked, deployed images live at the REPO ROOT
 // public/ (kevin_react/public is a git-ignored Vite staging dir and is empty
 // in CI). So this script targets the root public/ by default. The manifest is
@@ -70,9 +74,16 @@ const PNG_QUALITY = 80;
 // MAX_WIDTH (when it's wider than that) for an extra win. 0.30 = 30%.
 const RESIZE_TRIGGER_RATIO = 0.30;
 
+// Write policy: only replace a public image with its (lossy) compressed version
+// when that version is at least this much smaller than the original. Compressing
+// is approximate/lossy, so we only accept it when it buys a clear win; otherwise
+// the original bytes are kept untouched. 0.40 = the compressed file must be
+// >= 40% smaller.
+const MIN_WRITE_SAVING_RATIO = 0.40;
+
 // Bump the trailing version to force a re-optimize of everything. The knobs
 // above are encoded into each manifest entry so changing them re-processes.
-const SETTINGS_SIG = `w${MAX_WIDTH}-jq${JPEG_QUALITY}-pq${PNG_QUALITY}-rt${RESIZE_TRIGGER_RATIO}-v2`;
+const SETTINGS_SIG = `w${MAX_WIDTH}-jq${JPEG_QUALITY}-pq${PNG_QUALITY}-rt${RESIZE_TRIGGER_RATIO}-wt${MIN_WRITE_SAVING_RATIO}-v3`;
 
 const JPEG_EXT = new Set(['.jpg', '.jpeg']);
 const PNG_EXT = new Set(['.png']);
@@ -237,13 +248,16 @@ async function main() {
       const before = current.length;
       const after = buffer.length;
 
-      // Write only if it helps; but always record the resulting on-disk hash so
-      // future runs recognize this exact content as already-processed.
+      // Write only if the compressed version is at least MIN_WRITE_SAVING_RATIO
+      // smaller than the original; otherwise keep the original bytes. Either
+      // way, record the resulting on-disk hash so future runs recognize this
+      // exact content as already-processed.
+      const savingRatio = before > 0 ? (before - after) / before : 0;
       let finalBuf = buffer;
-      if (after >= before) {
-        // Optimized output is not smaller (already well-compressed source).
-        // Keep the original bytes on disk, but record ITS hash as the output so
-        // we never touch it again under these settings.
+      if (savingRatio < MIN_WRITE_SAVING_RATIO) {
+        // Not a big enough win (or not smaller at all) — the source is already
+        // well-compressed. Keep the original bytes on disk and record ITS hash
+        // so we never touch it again under these settings.
         finalBuf = current;
       } else {
         await writeFile(file, buffer);
