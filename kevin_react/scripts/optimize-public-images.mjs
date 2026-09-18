@@ -19,10 +19,19 @@
 // location that persists across CI runs (root public/ is fine too, but keeping
 // build metadata under src/ keeps the deployed public/ tree clean).
 //
+// Before optimizing, this script SYNCS your local staging folder
+// (kevin_react/public/, which is git-ignored) into the tracked, deployed root
+// public/. That way the manual workflow is a single command: drop new images
+// into kevin_react/public/, run `npm run optimize-images`, and they get copied
+// into the root public/ and optimized in place, ready to commit. Files whose
+// bytes already match at the destination are left alone, so the sync is cheap
+// and doesn't disturb already-optimized images. Set SKIP_SYNC=1 to skip it.
+//
 // Usage (from kevin_react/):  node scripts/optimize-public-images.mjs
 // Override the target dir:    IMAGE_DIR=/some/path node scripts/optimize-public-images.mjs
+// Skip the staging sync:      SKIP_SYNC=1 node scripts/optimize-public-images.mjs
 
-import { readdir, stat, readFile, writeFile, mkdir } from 'node:fs/promises';
+import { readdir, stat, readFile, writeFile, mkdir, copyFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -39,6 +48,9 @@ const REPO_ROOT = path.resolve(KEVIN_REACT, '..');
 const IMAGE_DIR = process.env.IMAGE_DIR
   ? path.resolve(process.env.IMAGE_DIR)
   : path.join(REPO_ROOT, 'public');
+
+// Local staging folder (git-ignored) that gets synced into IMAGE_DIR first.
+const STAGING_DIR = path.join(KEVIN_REACT, 'public');
 
 // Manifest lives under src/json/ (tracked), separate from the images.
 const MANIFEST_PATH = path.join(KEVIN_REACT, 'src', 'json', '.image-optim.json');
@@ -74,6 +86,38 @@ function fmtKB(bytes) {
   return `${(bytes / 1024).toFixed(1)} KB`;
 }
 
+// True if src and dst are byte-identical (so we can skip copying unchanged files).
+async function sameBytes(src, dst) {
+  try {
+    const [a, b] = await Promise.all([readFile(src), readFile(dst)]);
+    return a.length === b.length && a.equals(b);
+  } catch {
+    return false; // dst missing (or unreadable) => treat as different
+  }
+}
+
+// Copy every file from STAGING_DIR into destDir, preserving subpaths. Only
+// writes files that are new or whose bytes differ. Returns how many it copied.
+async function syncStagingInto(destDir) {
+  try {
+    await stat(STAGING_DIR);
+  } catch {
+    return { copied: 0, present: false }; // no staging dir => nothing to sync
+  }
+
+  let copied = 0;
+  for await (const src of walk(STAGING_DIR)) {
+    const rel = path.relative(STAGING_DIR, src);
+    const dst = path.join(destDir, rel);
+    if (await sameBytes(src, dst)) continue;
+    await mkdir(path.dirname(dst), { recursive: true });
+    await copyFile(src, dst);
+    copied++;
+    console.log(`sync  ${rel.split(path.sep).join('/')}`);
+  }
+  return { copied, present: true };
+}
+
 async function loadManifest() {
   try {
     const raw = await readFile(MANIFEST_PATH, 'utf8');
@@ -101,6 +145,22 @@ async function encode(input, ext) {
 }
 
 async function main() {
+  // Step 0: sync local staging (kevin_react/public) into the target public/.
+  // Skipped when SKIP_SYNC is set, or when IMAGE_DIR was overridden to a custom
+  // path (in that case the caller is targeting a specific dir on purpose, e.g.
+  // a test fixture, and shouldn't have staging copied over it).
+  const isDefaultTarget = !process.env.IMAGE_DIR;
+  if (!process.env.SKIP_SYNC && isDefaultTarget) {
+    const { copied, present } = await syncStagingInto(IMAGE_DIR);
+    if (!present) {
+      console.log(`No staging dir at ${path.relative(REPO_ROOT, STAGING_DIR)} — skipping sync.`);
+    } else if (copied === 0) {
+      console.log('Staging in sync with public/ — nothing new to copy.');
+    } else {
+      console.log(`Synced ${copied} file(s) from staging into public/.\n`);
+    }
+  }
+
   try {
     await stat(IMAGE_DIR);
   } catch {
