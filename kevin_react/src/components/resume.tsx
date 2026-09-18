@@ -1,14 +1,18 @@
 import { useEffect, useState } from "react"
 import { useFadeIn } from "./flyIn"
-import { useLoadGate } from "./loadPriority"
+import { useMediaItem } from "./loadPriority"
 
 const SMALL_SCREEN_QUERY = "(max-width: 600px)";
+const RESUME_PDF = "/public/resume/KevinJiang_ResumeSpring2026.pdf";
 
 export default function Resume() {
     const {flyInRef, isVisible} = useFadeIn();
-    // Résumé is the 2nd-priority group: it waits for Projects to finish, then
-    // loads the PDF and releases the queue so the backgrounds can load.
-    const { canLoad, reportLoaded } = useLoadGate("resume");
+    // Résumé loads right after the background clouds. It registers with the
+    // load coordinator using a stable URL (the bare PDF path, without the
+    // view-dependent #zoom hash) so screen-size changes don't re-register it.
+    // Not interruptible — it always loads straight through before projects.
+    const { src, reportDone } = useMediaItem("resume", RESUME_PDF);
+    const canLoad = !!src;
     const [isSmallScreen, setIsSmallScreen] = useState(
         () => typeof window !== "undefined" && window.matchMedia(SMALL_SCREEN_QUERY).matches
     );
@@ -19,13 +23,13 @@ export default function Resume() {
         mql.addEventListener("change", onChange);
         return () => mql.removeEventListener("change", onChange);
     }, []);
-    // If the preview fails, there is nothing left to load for this group, so
+    // If the preview fails, there is nothing left to load for this item, so
     // release the queue immediately.
     useEffect(() => {
-        if (previewFailed) reportLoaded();
-    }, [previewFailed, reportLoaded]);
+        if (previewFailed) reportDone();
+    }, [previewFailed, reportDone]);
     const zoom = isSmallScreen ? "page-height" : "page-width";
-    const pdfSrc = `/public/resume/KevinJiang_ResumeSpring2026.pdf#toolbar=1&navpanes=0&scrollbar=1&zoom=${zoom}`;
+    const pdfSrc = `${RESUME_PDF}#toolbar=1&navpanes=0&scrollbar=1&zoom=${zoom}`;
     return (
         <div ref={flyInRef} className={`resumeCloud resumeShow ${isVisible ? "show" : ""}`}>
           {previewFailed ? (
@@ -36,12 +40,12 @@ export default function Resume() {
             <iframe
               className="resumeFrame"
               src={canLoad ? pdfSrc : undefined}
-              onLoad={() => { if (canLoad) reportLoaded(); }}
+              onLoad={() => { if (canLoad) reportDone(); }}
               onError={() => setPreviewFailed(true)}
             />
           )}
           <div className="resumeLink" style={{backgroundColor:"white"}}>
-              <a href="/public/resume/KevinJiang_ResumeSpring2026.pdf">📖 View Resume</a>
+              <a href={RESUME_PDF}>📖 View Resume</a>
           </div>
         </div>
     )
