@@ -32,8 +32,8 @@ export const projectCardData: Record<string, ProjectCardProps> = {
         date: "2025",
         linkTo: "https://devpost.com/software/debug-debacle",
         imageLinks: ["/projects/mcHacks1.png", "/projects/mcHacks2.png", "/projects/mcHacks3.png", "/projects/mcHacks4.png", "/projects/mcHacks5.JPG"],
-        backgroundColour:"rgba(253, 255, 119, 0.43)",
-        titleColour: "lightYellow"
+        backgroundColour:"rgba(167, 0, 226, 0.3)",
+        titleColour: "rgba(128, 78, 255, 0.6)"
     },
     ASNA2025: {
         title: "Top 3 Finalist @ ASNA Hackathon",
@@ -50,8 +50,8 @@ export const projectCardData: Record<string, ProjectCardProps> = {
         date: "2024",
         imageLinks: ["/projects/FredBot1.png", "/projects/FredBot2.png", "/projects/FredBot3.png", "/projects/FredBot4.png"],
         linkTo: "https://git.uwaterloo.ca/a2/se101-project/-/tree/ae633b8c419b5042090589b12521ba804d662ea5/",
-        backgroundColour: "rgba(167, 0, 226, 0.3)",
-        titleColour: "rgba(128, 78, 255, 0.6)",
+        backgroundColour: "lightYellow",
+        titleColour: "rgba(253, 255, 119, 0.43)",
     },
     VEXRobotics: {
         title: "3388B: Can We Get Much Higher @ VEX Robotics",
