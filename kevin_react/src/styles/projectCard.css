@@ -110,29 +110,16 @@
     margin-bottom: 0;
   }
 
-  /* Single centered column: title fills the width and centers. The title text
-     can be long, so allow it to wrap and break instead of overflowing past
-     the inner div. */
-  .innerProjectCardTitle {
-    width: 100%;
-    margin: auto;
-    padding-right: 0;
-    text-align: center;
-    overflow-wrap: break-word;
-    word-break: break-word;
-  }
+  /* Small-screen title. Two things make the title grow only VERTICALLY:
 
-  .innerProjectCardTitle h3 {
-    margin: 0;
-    overflow-wrap: break-word;
-    word-break: break-word;
-  }
+     1. The title box clips and its inner text is pinned to the column width
+        with border-box sizing and break-anywhere wrapping, so long titles wrap
+        onto more lines instead of ever widening the card.
 
-  /* Small-screen title: the box is width-locked so it can only ever grow
-     DOWNWARD. The parent clips, the inner title is pinned to the full column
-     width with border-box sizing, and its text is allowed to break anywhere.
-     Long titles therefore wrap onto more lines (card grows vertically) and can
-     never widen the card horizontally. */
+     2. A PERMANENT right gutter is reserved for the arrow (padding-right). The
+        arrow lives in that gutter at all times, so the box never has to shrink
+        or slide on hover to make room for it. This is why the div no longer
+        changes size when hovered. */
   .projectCardTitle,
   .projectCardTitleNoLink {
     overflow: hidden;
@@ -147,19 +134,33 @@
     word-break: break-word;
   }
 
-  /* The desktop hover/tap slides the inner title LEFT by 70px, which on a
-     width-locked mobile title only pushes text off the edge. Cancel the slide
-     so hover keeps the title exactly in place (vertical growth only). The
-     .projectCard ancestor wins on specificity over the later base rule;
-     !important guards against future selector changes. */
+  .innerProjectCardTitle {
+    margin: auto;
+    text-align: center;
+    /* Reserve room on the right for the arrow so hover never resizes the box.
+       Balance the left side so the text stays visually centered. */
+    padding-left: 56px;
+    padding-right: 56px;
+  }
+
+  /* Cancel the desktop 70px slide on hover/tap — with the gutter reserved the
+     box must not move at all. The .projectCard ancestor wins on specificity
+     over the later base rule; !important guards against future changes. */
   .projectCard .projectCardTitle:hover .innerProjectCardTitle,
   .projectCard .projectCardTitleNoLink:hover .innerProjectCardTitle {
     transform: none !important;
   }
 
-  /* Keep the decorative arrow inside the title box on narrow screens. */
+  /* Park the arrow in the reserved right gutter, vertically centered, and stop
+     it from sliding on hover so nothing about the box moves. */
   .projectCardTitle::after {
-    right: 2%;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .projectCardTitle:hover::after {
+    transform: translateY(-50%);
   }
 
   .projectCardDate {

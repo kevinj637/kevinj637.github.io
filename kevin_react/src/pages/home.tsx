@@ -12,11 +12,12 @@ import Resume from '@/components/resume'
 import SkillsGrid from '@/components/skillsCard'
 import WelcomeCard from '@/components/welcomeCard'
 import BackgroundClouds from '@/components/backgroundCloud'
+import { LoadPriorityProvider } from '@/components/loadPriorityProvider'
 
 
 export default function Home() {
     return (
-        <>
+        <LoadPriorityProvider>
           <BackgroundClouds />
           <div className="myName logo">
             <h1>Kevin Jiang</h1>
@@ -91,6 +92,6 @@ export default function Home() {
           <p className="read-the-docs">
             Click on the Vite and React logos to learn more
           </p> */}
-        </>
+        </LoadPriorityProvider>
       )
 }

@@ -2,6 +2,8 @@ import type { mapProps } from "@/interfaces/map";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import { MapData } from "@/markdowns/map";
 import { useFadeIn } from "./flyIn";
+import { useLoadGate } from "./loadPriority";
+import { useEffect } from "react";
 import L from 'leaflet'
 //Remember to manually port leaflet css >;D
 import 'leaflet/dist/leaflet.css'
@@ -18,14 +20,16 @@ L.Icon.Default.mergeOptions({
   shadowUrl: markerShadow,
 })
 
-function PrettyPopup({position, popupText, imageLink, indexOffset = 0}: mapProps) {
+function PrettyPopup({position, popupText, imageLink, indexOffset = 0, canLoad}: mapProps & {canLoad: boolean}) {
     return (
     <Marker position={position} zIndexOffset={indexOffset}>
         <Popup>
             {popupText}
-            {imageLink && 
+            {imageLink && canLoad &&
             <img src={imageLink} alt={`${imageLink}`}
             className="mapImage"
+            loading="lazy"
+            decoding="async"
             onClick={() => window.location.href = imageLink}
             ></img>}
         </Popup>
@@ -35,6 +39,14 @@ function PrettyPopup({position, popupText, imageLink, indexOffset = 0}: mapProps
 
 export default function Map() {
     const {flyInRef, isVisible} = useFadeIn();
+    // Maps are the lowest-priority group. Popup images are already lazy
+    // (Leaflet builds a popup's DOM only when opened) and additionally carry
+    // loading="lazy", but we still hold their src until every higher-priority
+    // group (Projects, Résumé, Backgrounds) has finished loading.
+    const { canLoad, reportLoaded } = useLoadGate("maps");
+    useEffect(() => {
+        if (canLoad) reportLoaded();
+    }, [canLoad, reportLoaded]);
 
     //https://en.wikipedia.org/wiki/Centre_of_Canada
     return (
@@ -47,7 +59,7 @@ export default function Map() {
             />
 
             {Object.entries(MapData).map(([key, popupInfo])=> {
-                return <PrettyPopup key={key} {...popupInfo}/>
+                return <PrettyPopup key={key} {...popupInfo} canLoad={canLoad}/>
             })}
 
 

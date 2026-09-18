@@ -1,40 +1,42 @@
-// Optimize raster images under the deployed public/ directory in place,
-// preserving filenames and extensions so existing references
-// (e.g. "/public/map/Foo.jpg") keep working, including odd casing like ".JPG".
+// Optimize raster images (JPEG/PNG) under the deployed public/ directory in
+// place, preserving filenames and extensions so existing references
+// (e.g. "/public/map/Foo.jpg", including odd casing like ".JPG") keep working.
 //
-// Idempotency is guaranteed by a hash manifest (kevin_react/src/json/.image-optim.json):
-//   - For each image we record the SHA-256 of its OPTIMIZED bytes plus a
-//     signature of the settings used to produce them.
-//   - On a later run, if the file on disk already hashes to that recorded
-//     value AND the settings signature is unchanged, we skip it entirely:
-//     no decode, no re-encode, no write. So f(f(x)) == f(x) exactly, and
-//     already-optimized images are never recompressed (no generation loss).
-//   - If the file hash doesn't match (new or edited image) or the settings
-//     changed (e.g. a new MAX_WIDTH), we (re)optimize and update the manifest.
+// FLOW (per image), kept deliberately simple:
+//   1. Try LOSSLESS compression. If it produces a smaller file, store it. Done.
+//   2. If lossless didn't win, try LOSSY compression. Accept it only when it
+//      saves at least MIN_LOSSY_SAVING_RATIO (10%) — a big enough win to be
+//      worth the quality hit.
+//   3. Otherwise keep the original bytes untouched.
 //
-// Resize policy: images are re-compressed at a fixed quality but NOT resized by
-// default. Resizing to MAX_WIDTH kicks in only as a fallback — when
-// re-compression alone already saves more than RESIZE_TRIGGER_RATIO (30%),
-// which flags a heavy source worth also downscaling.
+// There is no resize policy: we never change image dimensions, only how the
+// pixels are packed (lossless) or re-encoded (lossy).
 //
-// Write policy: the compressed (lossy) result only replaces the original when
-// it is at least MIN_WRITE_SAVING_RATIO (40%) smaller. Smaller wins aren't
-// worth the lossy re-encode, so those files keep their original bytes.
+// WHY THE OLD "LOSSLESS" STEP KEPT FAILING (esp. for JPEGs):
+//   sharp has no true lossless JPEG transform. `sharp().jpeg({quality:100})`
+//   fully DECODES the JPEG to raw pixels and RE-ENCODES it. Because the source
+//   was already lossy-compressed at a lower quality, re-encoding at quality 100
+//   almost always produces a LARGER file, so the "saving" check never passed —
+//   the lossless step looked broken. It was also not actually lossless, since
+//   it re-quantizes the pixels.
 //
-// Deploy flow context: the tracked, deployed images live at the REPO ROOT
-// public/ (kevin_react/public is a git-ignored Vite staging dir and is empty
-// in CI). So this script targets the root public/ by default. The manifest is
-// kept separately at kevin_react/src/json/.image-optim.json — a tracked
-// location that persists across CI runs (root public/ is fine too, but keeping
-// build metadata under src/ keeps the deployed public/ tree clean).
+//   So we only treat a format as losslessly optimizable when sharp can truly
+//   preserve every pixel: that is PNG (sharp's PNG encoder is lossless). For
+//   JPEG there is no dependency-free lossless repack available through sharp,
+//   so the lossless step simply reports "no win" and the flow falls through to
+//   the lossy path — which is exactly the intended behavior.
 //
-// Before optimizing, this script SYNCS your local staging folder
-// (kevin_react/public/, which is git-ignored) into the tracked, deployed root
-// public/. That way the manual workflow is a single command: drop new images
-// into kevin_react/public/, run `npm run optimize-images`, and they get copied
-// into the root public/ and optimized in place, ready to commit. Files whose
-// bytes already match at the destination are left alone, so the sync is cheap
-// and doesn't disturb already-optimized images. Set SKIP_SYNC=1 to skip it.
+// IDEMPOTENCY: a manifest (kevin_react/src/json/.image-optim.json) records the
+// SHA-256 of each optimized file plus a settings signature. If a file already
+// hashes to that value under the same settings, it is skipped entirely — no
+// decode, no re-encode, no write — so running twice is a no-op.
+//
+// DEPLOY FLOW: the tracked, deployed images live at the REPO ROOT public/
+// (kevin_react/public is a git-ignored Vite staging dir). Before optimizing,
+// this script SYNCS kevin_react/public/ into the root public/ so the manual
+// workflow is one command: drop new images into kevin_react/public/, run
+// `npm run optimize-images`, and they land in root public/ optimized and ready
+// to commit. Set SKIP_SYNC=1 to skip the sync.
 //
 // Usage (from kevin_react/):  node scripts/optimize-public-images.mjs
 // Override the target dir:    IMAGE_DIR=/some/path node scripts/optimize-public-images.mjs
@@ -64,38 +66,31 @@ const STAGING_DIR = path.join(KEVIN_REACT, 'public');
 // Manifest lives under src/json/ (tracked), separate from the images.
 const MANIFEST_PATH = path.join(KEVIN_REACT, 'src', 'json', '.image-optim.json');
 
-const MAX_WIDTH = 1600;
+// Lossy re-encode quality (JPEG + PNG).
 const JPEG_QUALITY = 80;
 const PNG_QUALITY = 80;
 
-// Resize policy: by default we do NOT downscale — we just re-compress. But if
-// the lossy re-compression ALONE already shrinks the file by more than this
-// ratio, the source is heavy/wasteful, so we ALSO downscale it to MAX_WIDTH
-// (when it's wider than that) for an extra win. 0.30 = 30%.
-const RESIZE_TRIGGER_RATIO = 0.30;
-
-// Lossy write policy: the approximate (quality-80) re-encode changes pixels, so
-// we only accept it when it buys a clear win. It must be at least this much
-// smaller than the original; otherwise we don't take the lossy result. 0.20 =
-// the lossy file must be >= 20% smaller. (Lowered from 0.40 so more heavy
-// sources actually get compressed.)
-const MIN_LOSSY_SAVING_RATIO = 0.05;
-
-// Lossless write policy: a lossless re-encode preserves every pixel exactly, so
-// there is NO quality cost and no reason to demand a big win. Accept any real
-// reduction above this tiny floor. 0.005 = just 0.5%, enough to ignore noise
-// while capturing every genuine byte saved.
+// A lossless repack costs no quality, so accept it on any real reduction above
+// this tiny floor (ignore sub-0.5% noise).
 const MIN_LOSSLESS_SAVING_RATIO = 0.005;
 
+// A lossy re-encode changes pixels, so only accept it when the win is clearly
+// worth the quality hit: at least 10% smaller.
+const MIN_LOSSY_SAVING_RATIO = 0.10;
+
 // Bump the trailing version to force a re-optimize of everything. The knobs
-// above are encoded into each manifest entry so changing them re-processes.
-const SETTINGS_SIG = `w${MAX_WIDTH}-jq${JPEG_QUALITY}-pq${PNG_QUALITY}-rt${RESIZE_TRIGGER_RATIO}-ll${MIN_LOSSLESS_SAVING_RATIO}-wt${MIN_LOSSY_SAVING_RATIO}-v5`;
+// above are baked in so changing any of them re-processes affected files.
+const SETTINGS_SIG = `jq${JPEG_QUALITY}-pq${PNG_QUALITY}-ll${MIN_LOSSLESS_SAVING_RATIO}-ly${MIN_LOSSY_SAVING_RATIO}-v6`;
 
 const JPEG_EXT = new Set(['.jpg', '.jpeg']);
 const PNG_EXT = new Set(['.png']);
 
 function sha256(buf) {
   return createHash('sha256').update(buf).digest('hex');
+}
+
+function fmtKB(bytes) {
+  return `${(bytes / 1024).toFixed(1)} KB`;
 }
 
 async function* walk(dir) {
@@ -108,10 +103,6 @@ async function* walk(dir) {
       yield full;
     }
   }
-}
-
-function fmtKB(bytes) {
-  return `${(bytes / 1024).toFixed(1)} KB`;
 }
 
 // True if src and dst are byte-identical (so we can skip copying unchanged files).
@@ -156,101 +147,71 @@ async function loadManifest() {
   }
 }
 
-// LOSSLESS re-encode: preserves every pixel exactly, just repacks the file with
-// better entropy coding. No resizing (that would drop pixels). JPEG uses
-// mozjpeg's optimized Huffman tables without changing coefficients; PNG uses
-// max zlib effort at full quality. Same format in/out.
+// LOSSLESS repack: preserve every pixel exactly, just pack the bytes better.
+//   - PNG: sharp's PNG encoder is lossless; max effort/compression squeezes
+//     poorly-packed sources without touching a single pixel.
+//   - JPEG: sharp cannot repack a JPEG losslessly (any encode re-quantizes the
+//     pixels), so there is no honest lossless candidate. Return null and let
+//     the lossy path handle it.
+// Returns a Buffer, or null when no lossless option exists for this format.
 async function encodeLossless(input, ext) {
-  let pipeline = sharp(input, { failOn: 'error' });
-  if (JPEG_EXT.has(ext)) {
-    // quality:100 + mozjpeg keeps the source coefficients while re-optimizing
-    // the entropy coding — effectively lossless repacking for our purposes.
-    pipeline = pipeline.jpeg({ quality: 100, mozjpeg: true, optimizeScans: true });
-  } else {
-    // PNG is inherently lossless; palette:false keeps full color depth.
-    pipeline = pipeline.png({ compressionLevel: 9, effort: 10, palette: false });
+  if (PNG_EXT.has(ext)) {
+    return sharp(input, { failOn: 'error' })
+      .png({ compressionLevel: 9, effort: 10, palette: false })
+      .toBuffer();
   }
-  return pipeline.toBuffer();
+  return null; // no true lossless path for JPEG via sharp
 }
 
-// LOSSY re-encode at the configured quality, same format in/out. If `resize`
-// is true and the source is wider than MAX_WIDTH, downscale to MAX_WIDTH first.
-async function encodeLossy(input, ext, resize) {
-  let pipeline = sharp(input, { failOn: 'error' });
-  if (resize) {
-    pipeline = pipeline.resize({ width: MAX_WIDTH, withoutEnlargement: true });
-  }
+// LOSSY re-encode at the configured quality, same format in/out. Dimensions
+// are never changed.
+async function encodeLossy(input, ext) {
+  const pipeline = sharp(input, { failOn: 'error' });
   if (JPEG_EXT.has(ext)) {
-    pipeline = pipeline.jpeg({ quality: JPEG_QUALITY, mozjpeg: true });
-  } else {
-    pipeline = pipeline.png({ quality: PNG_QUALITY, compressionLevel: 9, effort: 7 });
+    return pipeline.jpeg({ quality: JPEG_QUALITY, mozjpeg: true }).toBuffer();
   }
-  return pipeline.toBuffer();
+  return pipeline.png({ quality: PNG_QUALITY, compressionLevel: 9, effort: 7 }).toBuffer();
 }
 
-// Choose the best acceptable re-encode for `input`.
-//
-// 1. LOSSLESS first: repack without touching pixels. Since there is no quality
-//    cost, accept it whenever it saves more than the tiny MIN_LOSSLESS_SAVING_RATIO
-//    floor. This is what pulls in all the "already a jpeg, but wastefully packed"
-//    files that the old 40% lossy-only gate rejected.
-// 2. LOSSY fallback: quality-80 re-encode, accepted only when it clears the
-//    higher MIN_LOSSY_SAVING_RATIO bar. If that lossy pass alone saved more than
-//    RESIZE_TRIGGER_RATIO and the image is wider than MAX_WIDTH, also downscale.
-// 3. Whichever accepted result is SMALLEST wins. If neither is accepted, return
-//    kind:'none' so the caller keeps the original bytes.
-//
-// Returns { buffer, kind: 'lossless' | 'lossy' | 'none', willResize }.
+// Apply the flow to one image's bytes.
+//   1. Try lossless -> if it shrinks the file past the tiny floor, take it.
+//   2. Else try lossy -> take it only if it saves >= MIN_LOSSY_SAVING_RATIO.
+//   3. Else keep the original.
+// Returns { buffer, kind: 'lossless' | 'lossy' | 'none' }.
 async function encode(input, ext) {
   const before = input.length;
-  if (before === 0) return { buffer: input, kind: 'none', willResize: false };
-
-  const meta = await sharp(input, { failOn: 'error' }).metadata();
-  const canResize = (meta.width ?? 0) > MAX_WIDTH;
+  if (before === 0) return { buffer: input, kind: 'none' };
 
   const savingOf = (buf) => (before - buf.length) / before;
 
-  // --- Candidate 1: lossless repack.
-  let lossless = null;
+  // --- Step 1: lossless.
   try {
     const buf = await encodeLossless(input, ext);
-    if (savingOf(buf) >= MIN_LOSSLESS_SAVING_RATIO) lossless = buf;
-  } catch {
-    // Some inputs can't be losslessly repacked (e.g. odd JPEG variants); just
-    // fall through to the lossy path.
-  }
-
-  // --- Candidate 2: lossy re-compress (+ optional resize fallback).
-  const recompressed = await encodeLossy(input, ext, false);
-  let lossy = null;
-  let willResize = false;
-  if (canResize && savingOf(recompressed) > RESIZE_TRIGGER_RATIO) {
-    const resized = await encodeLossy(input, ext, true);
-    if (savingOf(resized) >= MIN_LOSSY_SAVING_RATIO) {
-      lossy = resized;
-      willResize = true;
+    if (buf && savingOf(buf) >= MIN_LOSSLESS_SAVING_RATIO) {
+      return { buffer: buf, kind: 'lossless' };
     }
-  }
-  if (!lossy && savingOf(recompressed) >= MIN_LOSSY_SAVING_RATIO) {
-    lossy = recompressed;
+  } catch {
+    // Lossless failed for this input; fall through to lossy.
   }
 
-  // --- Pick the smallest accepted candidate; prefer lossless on a tie since it
-  // costs no quality.
-  if (lossless && (!lossy || lossless.length <= lossy.length)) {
-    return { buffer: lossless, kind: 'lossless', willResize: false };
+  // --- Step 2: lossy.
+  try {
+    const buf = await encodeLossy(input, ext);
+    if (savingOf(buf) >= MIN_LOSSY_SAVING_RATIO) {
+      return { buffer: buf, kind: 'lossy' };
+    }
+  } catch {
+    // Lossy failed too; keep the original.
   }
-  if (lossy) {
-    return { buffer: lossy, kind: 'lossy', willResize };
-  }
-  return { buffer: input, kind: 'none', willResize: false };
+
+  // --- Step 3: nothing worth writing.
+  return { buffer: input, kind: 'none' };
 }
 
 async function main() {
   // Step 0: sync local staging (kevin_react/public) into the target public/.
-  // Skipped when SKIP_SYNC is set, or when IMAGE_DIR was overridden to a custom
-  // path (in that case the caller is targeting a specific dir on purpose, e.g.
-  // a test fixture, and shouldn't have staging copied over it).
+  // Skipped when SKIP_SYNC is set, or when IMAGE_DIR was overridden (the caller
+  // is targeting a specific dir on purpose, e.g. a test fixture).
   const isDefaultTarget = !process.env.IMAGE_DIR;
   if (!process.env.SKIP_SYNC && isDefaultTarget) {
     const { copied, present } = await syncStagingInto(IMAGE_DIR);
@@ -302,21 +263,14 @@ async function main() {
     }
 
     try {
-      const { buffer, kind, willResize } = await encode(current, ext);
+      const { buffer, kind } = await encode(current, ext);
       const before = current.length;
       const after = buffer.length;
 
-      // encode() already decided whether a candidate is worth taking:
-      //   - 'lossless': pixel-identical repack that beat the tiny floor.
-      //   - 'lossy'   : quality-80 re-encode that cleared the lossy bar.
-      //   - 'none'    : nothing worth writing; keep the original bytes.
-      // Either way we record the resulting on-disk hash so future runs
-      // recognize this exact content as already-processed.
       let finalBuf = current;
       if (kind === 'none') {
-        // Source is already well-packed. Keep original bytes, record ITS hash
-        // so we never touch it again under these settings.
-        finalBuf = current;
+        // Already well-packed. Keep original bytes, record ITS hash so we never
+        // reprocess it under these settings.
         keptOriginal++;
       } else {
         await writeFile(file, buffer);
@@ -324,10 +278,7 @@ async function main() {
         optimized++;
         bytesBefore += before;
         bytesAfter += after;
-        const tags = [kind === 'lossless' ? 'lossless' : 'lossy', willResize ? 'resized' : null]
-          .filter(Boolean)
-          .join(', ');
-        console.log(`opt   ${rel}  ${fmtKB(before)} -> ${fmtKB(after)} (${tags})`);
+        console.log(`opt   ${rel}  ${fmtKB(before)} -> ${fmtKB(after)} (${kind})`);
       }
 
       nextEntries[rel] = {
@@ -342,8 +293,8 @@ async function main() {
     }
   }
 
-  // Prune entries for files that no longer exist, then persist. Ensure the
-  // manifest directory (src/json/) exists first, since it may be brand new.
+  // Persist manifest (pruning entries for files that no longer exist by only
+  // writing nextEntries). Ensure src/json/ exists first.
   const manifestOut = {
     settingsSig: SETTINGS_SIG,
     updatedAt: new Date().toISOString(),

@@ -38,8 +38,13 @@
   z-index: 0;
 }
 
+/* Cloud background images are gated behind prioritized loading: they are the
+   3rd priority group (after Projects and Résumé). Since CSS background-image
+   cannot use loading="lazy", the images are only assigned once JS adds the
+   `.clouds-ready` class to the container (see backgroundCloud.tsx), which
+   preloads the webp files first. The positioning/size/animation below always
+   apply so layout is stable; only the paint of the image waits. */
 .bg-cloud1 {
-  background-image: url("@/assets/clouds/cloud1.webp");
   top: 100px;
   width: 242px;
   aspect-ratio: 726 / 547;
@@ -47,7 +52,6 @@
 }
 
 .bg-cloud2 {
-  background-image: url("@/assets/clouds/cloud2.webp");
   top: 700px;
   width: 427px;
   aspect-ratio: 1280 / 486;
@@ -55,7 +59,6 @@
 }
 
 .bg-cloud3 {
-  background-image: url("@/assets/clouds/cloud3.webp");
   top: 500px;
   width: 156px;
   aspect-ratio: 469 / 272;
@@ -63,7 +66,6 @@
 }
 
 .bg-cloud4 {
-  background-image: url("@/assets/clouds/cloud4.webp");
   top: 300px;
   width: 164px;
   aspect-ratio: 493 / 251;
@@ -71,7 +73,6 @@
 }
 
 .bg-cloud5 {
-  background-image: url("@/assets/clouds/cloud5.webp");
   top: 500px;
   left: 400px;
   width: 329px;
@@ -80,7 +81,6 @@
 }
 
 .bg-cloud6 {
-  background-image: url("@/assets/clouds/cloud6.webp");
   top: 600px;
   width: 353px;
   aspect-ratio: 1060 / 607;
@@ -88,7 +88,6 @@
 }
 
 .bg-cloud7 {
-  background-image: url("@/assets/clouds/cloud7.webp");
   top: 600px;
   width: 139px;
   aspect-ratio: 417 / 301;
@@ -96,7 +95,6 @@
 }
 
 .bg-cloud8 {
-  background-image: url("@/assets/clouds/cloud8.webp");
   top: 0;
   width: 308px;
   aspect-ratio: 924 / 479;
@@ -104,12 +102,22 @@
 }
 
 .bg-cloud9 {
-  background-image: url("@/assets/clouds/cloud9.webp");
   top: 650px;
   width: 312px;
   aspect-ratio: 937 / 525;
   animation: bg-cloud2-movement 120s linear -10s infinite reverse;
 }
+
+/* Backgrounds are painted only once preloaded and it's this group's turn. */
+.bg-cloud-container.clouds-ready .bg-cloud1 { background-image: url("@/assets/clouds/cloud1.webp"); }
+.bg-cloud-container.clouds-ready .bg-cloud2 { background-image: url("@/assets/clouds/cloud2.webp"); }
+.bg-cloud-container.clouds-ready .bg-cloud3 { background-image: url("@/assets/clouds/cloud3.webp"); }
+.bg-cloud-container.clouds-ready .bg-cloud4 { background-image: url("@/assets/clouds/cloud4.webp"); }
+.bg-cloud-container.clouds-ready .bg-cloud5 { background-image: url("@/assets/clouds/cloud5.webp"); }
+.bg-cloud-container.clouds-ready .bg-cloud6 { background-image: url("@/assets/clouds/cloud6.webp"); }
+.bg-cloud-container.clouds-ready .bg-cloud7 { background-image: url("@/assets/clouds/cloud7.webp"); }
+.bg-cloud-container.clouds-ready .bg-cloud8 { background-image: url("@/assets/clouds/cloud8.webp"); }
+.bg-cloud-container.clouds-ready .bg-cloud9 { background-image: url("@/assets/clouds/cloud9.webp"); }
 
 /* Opaque grass "ground": full-width strip in normal flow at the bottom of
    the PAGE (not the viewport), so it only appears when scrolled to the end.

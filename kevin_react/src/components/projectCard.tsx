@@ -1,6 +1,7 @@
 import type { ProjectCardProps } from "@/interfaces/projectCard";
 import React, { useState, useEffect } from "react";
 import { useFlyIn } from "./flyIn";
+import { useLoadGate } from "./loadPriority";
 import "@/App.css"
 
 
@@ -9,6 +10,15 @@ export default function ProjectCard({title, description, date, linkTo, imageLink
   const [nextIndex, setNextIndex] = useState(1);
   const [isFading, setIsFading] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(true);
+  // Projects are the highest-priority media group: they may start fetching
+  // immediately, and once a card's first image settles we release the queue
+  // so the résumé (next group) can begin loading.
+  const { canLoad, reportLoaded } = useLoadGate("projects");
+  // A card with no images can't gate the queue on an image load, so it
+  // releases as soon as it is allowed to load.
+  useEffect(() => {
+    if (canLoad && !imageLinks?.length) reportLoaded();
+  }, [canLoad, imageLinks?.length, reportLoaded]);
   // Touch / no-hover devices: hover can't drive the expand, so tap does.
   const isTouch = typeof window !== "undefined" &&
     window.matchMedia?.("(hover: none)").matches;
@@ -77,29 +87,36 @@ export default function ProjectCard({title, description, date, linkTo, imageLink
                     {imageLinks?.length && 
                     <div>
                         <div className="projectImageContainer" onClick={() => window.location.href = imageLinks[currentIndex]}>
-                            <img src={imageLinks[currentIndex]} 
+                            <img src={canLoad ? imageLinks[currentIndex] : undefined} 
                             className="projectImage baseImage"
-                            alt={imageLinks[nextIndex]}>
+                            alt={imageLinks[nextIndex]}
+                            decoding="async"
+                            onLoad={reportLoaded}
+                            onError={reportLoaded}>
                             </img>
-                            <img src={imageLinks[nextIndex]} 
-                            className={`projectImage overlayImage ${isFading? "active" : ""}`}>
+                            <img src={canLoad ? imageLinks[nextIndex] : undefined} 
+                            className={`projectImage overlayImage ${isFading? "active" : ""}`}
+                            decoding="async">
                             </img>
                         </div>
                     </div>}
                     {videoLink && 
                     <div className="baseVideo">
+                        {canLoad &&
                         <video src={videoLink} 
                         onClick={() => window.location.href = videoLink}
+                        preload="metadata"
                         autoPlay muted loop>
-                        </video>
+                        </video>}
                     </div>}
                     {attachDocument && 
                     <div style={{ position: "relative" }}>
+                        {canLoad &&
                         <embed
                             src={`${attachDocument}#zoom=page-width`}
                             type="application/pdf"
                             className="projectDocument"
-                        />
+                        />}
                         <div className="documentLinkPadding"
                         style={{backgroundColor: titleColour}}>
                             <a href={attachDocument}>📖 View Document</a>
