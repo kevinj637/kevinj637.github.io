@@ -68,22 +68,28 @@ const MAX_WIDTH = 1600;
 const JPEG_QUALITY = 80;
 const PNG_QUALITY = 80;
 
-// Resize policy: by default we do NOT downscale — we just re-compress at the
-// quality above. But if re-compression ALONE already shrinks the file by more
-// than this ratio, the source is heavy/wasteful, so we ALSO downscale it to
-// MAX_WIDTH (when it's wider than that) for an extra win. 0.30 = 30%.
+// Resize policy: by default we do NOT downscale — we just re-compress. But if
+// the lossy re-compression ALONE already shrinks the file by more than this
+// ratio, the source is heavy/wasteful, so we ALSO downscale it to MAX_WIDTH
+// (when it's wider than that) for an extra win. 0.30 = 30%.
 const RESIZE_TRIGGER_RATIO = 0.30;
 
-// Write policy: only replace a public image with its (lossy) compressed version
-// when that version is at least this much smaller than the original. Compressing
-// is approximate/lossy, so we only accept it when it buys a clear win; otherwise
-// the original bytes are kept untouched. 0.40 = the compressed file must be
-// >= 40% smaller.
-const MIN_WRITE_SAVING_RATIO = 0.40;
+// Lossy write policy: the approximate (quality-80) re-encode changes pixels, so
+// we only accept it when it buys a clear win. It must be at least this much
+// smaller than the original; otherwise we don't take the lossy result. 0.20 =
+// the lossy file must be >= 20% smaller. (Lowered from 0.40 so more heavy
+// sources actually get compressed.)
+const MIN_LOSSY_SAVING_RATIO = 0.05;
+
+// Lossless write policy: a lossless re-encode preserves every pixel exactly, so
+// there is NO quality cost and no reason to demand a big win. Accept any real
+// reduction above this tiny floor. 0.005 = just 0.5%, enough to ignore noise
+// while capturing every genuine byte saved.
+const MIN_LOSSLESS_SAVING_RATIO = 0.005;
 
 // Bump the trailing version to force a re-optimize of everything. The knobs
 // above are encoded into each manifest entry so changing them re-processes.
-const SETTINGS_SIG = `w${MAX_WIDTH}-jq${JPEG_QUALITY}-pq${PNG_QUALITY}-rt${RESIZE_TRIGGER_RATIO}-wt${MIN_WRITE_SAVING_RATIO}-v3`;
+const SETTINGS_SIG = `w${MAX_WIDTH}-jq${JPEG_QUALITY}-pq${PNG_QUALITY}-rt${RESIZE_TRIGGER_RATIO}-ll${MIN_LOSSLESS_SAVING_RATIO}-wt${MIN_LOSSY_SAVING_RATIO}-v5`;
 
 const JPEG_EXT = new Set(['.jpg', '.jpeg']);
 const PNG_EXT = new Set(['.png']);
@@ -150,10 +156,26 @@ async function loadManifest() {
   }
 }
 
-// Encode `input` (a raster buffer) at the configured quality, same format in /
-// out. If `resize` is true and the source is wider than MAX_WIDTH, downscale
-// to MAX_WIDTH first.
-async function encodeOnce(input, ext, resize) {
+// LOSSLESS re-encode: preserves every pixel exactly, just repacks the file with
+// better entropy coding. No resizing (that would drop pixels). JPEG uses
+// mozjpeg's optimized Huffman tables without changing coefficients; PNG uses
+// max zlib effort at full quality. Same format in/out.
+async function encodeLossless(input, ext) {
+  let pipeline = sharp(input, { failOn: 'error' });
+  if (JPEG_EXT.has(ext)) {
+    // quality:100 + mozjpeg keeps the source coefficients while re-optimizing
+    // the entropy coding — effectively lossless repacking for our purposes.
+    pipeline = pipeline.jpeg({ quality: 100, mozjpeg: true, optimizeScans: true });
+  } else {
+    // PNG is inherently lossless; palette:false keeps full color depth.
+    pipeline = pipeline.png({ compressionLevel: 9, effort: 10, palette: false });
+  }
+  return pipeline.toBuffer();
+}
+
+// LOSSY re-encode at the configured quality, same format in/out. If `resize`
+// is true and the source is wider than MAX_WIDTH, downscale to MAX_WIDTH first.
+async function encodeLossy(input, ext, resize) {
   let pipeline = sharp(input, { failOn: 'error' });
   if (resize) {
     pipeline = pipeline.resize({ width: MAX_WIDTH, withoutEnlargement: true });
@@ -166,27 +188,62 @@ async function encodeOnce(input, ext, resize) {
   return pipeline.toBuffer();
 }
 
-// Two-pass optimize:
-//   1. Re-compress WITHOUT resizing and measure how much that alone saved.
-//   2. If that saving exceeds RESIZE_TRIGGER_RATIO (and the image is actually
-//      wider than MAX_WIDTH), ALSO downscale and use the resized result.
-// Returns the chosen buffer plus whether it was resized.
+// Choose the best acceptable re-encode for `input`.
+//
+// 1. LOSSLESS first: repack without touching pixels. Since there is no quality
+//    cost, accept it whenever it saves more than the tiny MIN_LOSSLESS_SAVING_RATIO
+//    floor. This is what pulls in all the "already a jpeg, but wastefully packed"
+//    files that the old 40% lossy-only gate rejected.
+// 2. LOSSY fallback: quality-80 re-encode, accepted only when it clears the
+//    higher MIN_LOSSY_SAVING_RATIO bar. If that lossy pass alone saved more than
+//    RESIZE_TRIGGER_RATIO and the image is wider than MAX_WIDTH, also downscale.
+// 3. Whichever accepted result is SMALLEST wins. If neither is accepted, return
+//    kind:'none' so the caller keeps the original bytes.
+//
+// Returns { buffer, kind: 'lossless' | 'lossy' | 'none', willResize }.
 async function encode(input, ext) {
   const before = input.length;
+  if (before === 0) return { buffer: input, kind: 'none', willResize: false };
+
   const meta = await sharp(input, { failOn: 'error' }).metadata();
   const canResize = (meta.width ?? 0) > MAX_WIDTH;
 
-  // Pass 1: compression only.
-  const recompressed = await encodeOnce(input, ext, false);
-  const compressionSaving = before > 0 ? (before - recompressed.length) / before : 0;
+  const savingOf = (buf) => (before - buf.length) / before;
 
-  // Pass 2 (fallback): if compression alone was a big win, resize too.
-  if (canResize && compressionSaving > RESIZE_TRIGGER_RATIO) {
-    const resized = await encodeOnce(input, ext, true);
-    return { buffer: resized, willResize: true };
+  // --- Candidate 1: lossless repack.
+  let lossless = null;
+  try {
+    const buf = await encodeLossless(input, ext);
+    if (savingOf(buf) >= MIN_LOSSLESS_SAVING_RATIO) lossless = buf;
+  } catch {
+    // Some inputs can't be losslessly repacked (e.g. odd JPEG variants); just
+    // fall through to the lossy path.
   }
 
-  return { buffer: recompressed, willResize: false };
+  // --- Candidate 2: lossy re-compress (+ optional resize fallback).
+  const recompressed = await encodeLossy(input, ext, false);
+  let lossy = null;
+  let willResize = false;
+  if (canResize && savingOf(recompressed) > RESIZE_TRIGGER_RATIO) {
+    const resized = await encodeLossy(input, ext, true);
+    if (savingOf(resized) >= MIN_LOSSY_SAVING_RATIO) {
+      lossy = resized;
+      willResize = true;
+    }
+  }
+  if (!lossy && savingOf(recompressed) >= MIN_LOSSY_SAVING_RATIO) {
+    lossy = recompressed;
+  }
+
+  // --- Pick the smallest accepted candidate; prefer lossless on a tie since it
+  // costs no quality.
+  if (lossless && (!lossy || lossless.length <= lossy.length)) {
+    return { buffer: lossless, kind: 'lossless', willResize: false };
+  }
+  if (lossy) {
+    return { buffer: lossy, kind: 'lossy', willResize };
+  }
+  return { buffer: input, kind: 'none', willResize: false };
 }
 
 async function main() {
@@ -218,6 +275,7 @@ async function main() {
 
   let optimized = 0;
   let skipped = 0;      // already optimal per manifest
+  let keptOriginal = 0; // evaluated this run, but no candidate beat the source
   let nonRaster = 0;
   let bytesBefore = 0;
   let bytesAfter = 0;
@@ -244,27 +302,32 @@ async function main() {
     }
 
     try {
-      const { buffer, willResize } = await encode(current, ext);
+      const { buffer, kind, willResize } = await encode(current, ext);
       const before = current.length;
       const after = buffer.length;
 
-      // Write only if the compressed version is at least MIN_WRITE_SAVING_RATIO
-      // smaller than the original; otherwise keep the original bytes. Either
-      // way, record the resulting on-disk hash so future runs recognize this
-      // exact content as already-processed.
-      const savingRatio = before > 0 ? (before - after) / before : 0;
-      let finalBuf = buffer;
-      if (savingRatio < MIN_WRITE_SAVING_RATIO) {
-        // Not a big enough win (or not smaller at all) — the source is already
-        // well-compressed. Keep the original bytes on disk and record ITS hash
+      // encode() already decided whether a candidate is worth taking:
+      //   - 'lossless': pixel-identical repack that beat the tiny floor.
+      //   - 'lossy'   : quality-80 re-encode that cleared the lossy bar.
+      //   - 'none'    : nothing worth writing; keep the original bytes.
+      // Either way we record the resulting on-disk hash so future runs
+      // recognize this exact content as already-processed.
+      let finalBuf = current;
+      if (kind === 'none') {
+        // Source is already well-packed. Keep original bytes, record ITS hash
         // so we never touch it again under these settings.
         finalBuf = current;
+        keptOriginal++;
       } else {
         await writeFile(file, buffer);
+        finalBuf = buffer;
         optimized++;
         bytesBefore += before;
         bytesAfter += after;
-        console.log(`opt   ${rel}  ${fmtKB(before)} -> ${fmtKB(after)}${willResize ? ' (resized)' : ''}`);
+        const tags = [kind === 'lossless' ? 'lossless' : 'lossy', willResize ? 'resized' : null]
+          .filter(Boolean)
+          .join(', ');
+        console.log(`opt   ${rel}  ${fmtKB(before)} -> ${fmtKB(after)} (${tags})`);
       }
 
       nextEntries[rel] = {
@@ -291,7 +354,7 @@ async function main() {
 
   const saved = bytesBefore - bytesAfter;
   console.log(
-    `\nDone. optimized=${optimized} skipped(idempotent)=${skipped} untouched(non-raster)=${nonRaster}` +
+    `\nDone. optimized=${optimized} kept-original(no-win)=${keptOriginal} skipped(idempotent)=${skipped} untouched(non-raster)=${nonRaster}` +
       (optimized > 0 ? `  saved ~${fmtKB(saved)} (${((saved / bytesBefore) * 100).toFixed(0)}%)` : '') +
       `\nManifest: ${path.relative(REPO_ROOT, MANIFEST_PATH)}`
   );

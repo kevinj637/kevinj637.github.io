@@ -128,15 +128,33 @@
     word-break: break-word;
   }
 
-  /* The desktop hover slides the inner title left by 70px (to reveal the
-     arrow). On small screens the title is full-width and centered, so that
-     shift is what pushes the {title} text out past the right edge of its div.
-     Cancel the slide on small screens so the title stays inside the box.
-     The base .projectCardTitle:hover .innerProjectCardTitle rule appears later
-     in this file, so this override adds the .projectCard ancestor to win on
-     specificity rather than source order. */
-  .projectCard .projectCardTitle:hover .innerProjectCardTitle {
-    transform: none;
+  /* Small-screen title: the box is width-locked so it can only ever grow
+     DOWNWARD. The parent clips, the inner title is pinned to the full column
+     width with border-box sizing, and its text is allowed to break anywhere.
+     Long titles therefore wrap onto more lines (card grows vertically) and can
+     never widen the card horizontally. */
+  .projectCardTitle,
+  .projectCardTitleNoLink {
+    overflow: hidden;
+  }
+
+  .innerProjectCardTitle,
+  .innerProjectCardTitle h3 {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  /* The desktop hover/tap slides the inner title LEFT by 70px, which on a
+     width-locked mobile title only pushes text off the edge. Cancel the slide
+     so hover keeps the title exactly in place (vertical growth only). The
+     .projectCard ancestor wins on specificity over the later base rule;
+     !important guards against future selector changes. */
+  .projectCard .projectCardTitle:hover .innerProjectCardTitle,
+  .projectCard .projectCardTitleNoLink:hover .innerProjectCardTitle {
+    transform: none !important;
   }
 
   /* Keep the decorative arrow inside the title box on narrow screens. */
