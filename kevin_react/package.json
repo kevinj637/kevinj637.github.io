@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "cross-env BROWSER=msedge vite --open",
+    "optimize-images": "node scripts/optimize-public-images.mjs",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"

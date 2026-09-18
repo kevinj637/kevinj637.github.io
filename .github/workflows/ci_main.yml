@@ -45,11 +45,15 @@ jobs:
         with:
           node-version: 22
 
-      # Build
-      - name: Install dependencies, build, move dist to root
+      # Build. The optimize-images step downscales/re-compresses raster images
+      # under kevin_react/public IN PLACE before the build. It only runs here in
+      # CI (on a fresh checkout), so full-quality originals stay untouched in the
+      # repo while the deployed artifact ships optimized images.
+      - name: Install dependencies, optimize images, build, move dist to root
         working-directory: ./kevin_react
         run: |
           npm install
+          npm run optimize-images
           npm run build
           
       - run: cp -r kevin_react/dist/* .
