@@ -7,43 +7,34 @@ const RESUME_PDF = "/resume/KevinJiang_ResumeSpring2026.pdf";
 
 export default function Resume() {
     const {flyInRef, isVisible} = useFadeIn();
-    // Résumé loads right after the background clouds. It registers with the
-    // load coordinator using a stable URL (the bare PDF path, without the
-    // view-dependent #zoom hash) so screen-size changes don't re-register it.
-    // Not interruptible — it always loads straight through before projects.
-    const { src, reportDone } = useMediaItem("resume", RESUME_PDF);
-    const canLoad = !!src;
+    // Registers with the load coordinator (group "resume", after backgrounds).
+    const { reportDone } = useMediaItem("resume", RESUME_PDF);
     const [isSmallScreen, setIsSmallScreen] = useState(
         () => typeof window !== "undefined" && window.matchMedia(SMALL_SCREEN_QUERY).matches
     );
-    const [previewFailed, setPreviewFailed] = useState(false);
     useEffect(() => {
         const mql = window.matchMedia(SMALL_SCREEN_QUERY);
         const onChange = (e: MediaQueryListEvent) => setIsSmallScreen(e.matches);
         mql.addEventListener("change", onChange);
         return () => mql.removeEventListener("change", onChange);
     }, []);
-    // If the preview fails, there is nothing left to load for this item, so
-    // release the queue immediately.
+    // The PDF plugin fires no reliable load event, so release the queue on
+    // mount rather than waiting on one. The embed fetches its src immediately,
+    // so the résumé no longer blocks later groups while it downloads.
     useEffect(() => {
-        if (previewFailed) reportDone();
-    }, [previewFailed, reportDone]);
+        reportDone();
+    }, [reportDone]);
     const zoom = isSmallScreen ? "page-height" : "page-width";
     const pdfSrc = `${RESUME_PDF}#toolbar=1&navpanes=0&scrollbar=1&zoom=${zoom}`;
     return (
         <div ref={flyInRef} className={`resumeCloud resumeShow ${isVisible ? "show" : ""}`}>
-          {previewFailed ? (
+          {/* <object> renders its children as fallback when the PDF plugin
+              can't display the file, so the message shows automatically. */}
+          <object className="resumeFrame" data={pdfSrc} type="application/pdf">
             <p className="resumePreviewUnavailable">
               Inline preview unavailable. Use the link below to open or download the résumé.
             </p>
-          ) : (
-            <iframe
-              className="resumeFrame"
-              src={canLoad ? pdfSrc : undefined}
-              onLoad={() => { if (canLoad) reportDone(); }}
-              onError={() => setPreviewFailed(true)}
-            />
-          )}
+          </object>
           <div className="resumeLink" style={{backgroundColor:"white"}}>
               <a href={RESUME_PDF}>📖 View Resume</a>
           </div>
