@@ -4,8 +4,15 @@ import react from '@vitejs/plugin-react'
 import path from 'node:path'
 import tailwindcss from '@tailwindcss/vite'
 
-export default defineConfig({
+export default defineConfig(({ command }) => ({
   plugins: [react(), tailwindcss()],
+  // Static public assets live in two places:
+  //  For dev it lives in untracked kevin_react/public folder
+  //  For prod it lives in tracked top level folder /public, allowing direct access to static assets.
+  publicDir:
+    command === 'build'
+      ? path.resolve(__dirname, '../public')
+      : path.resolve(__dirname, 'public'),
   resolve: {
     alias: {
       '@styles': path.resolve(__dirname, 'src/styles'),
@@ -29,4 +36,4 @@ export default defineConfig({
       },
     },
   },
-})
+}))
