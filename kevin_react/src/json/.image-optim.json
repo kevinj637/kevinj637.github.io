@@ -1,0 +1,246 @@
+{
+  "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6",
+  "updatedAt": "2026-09-18T01:33:22.369Z",
+  "entries": {
+    "map/ASNA1.jpg": {
+      "outputHash": "e495ce6c84a6b705e98025d60723dff593302aa26aec2cb7c7f8b3d12c8bf78b",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "map/ASNA2.jpg": {
+      "outputHash": "29f3181c89c1c3d082c7e4f8767d39143b57218343d24b404196dfbbabaf8aca",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "map/Boeing.jpg": {
+      "outputHash": "b107df8f9c3931e574b077f5725f4250f91d1c4bb2f4cbf242ed4c3ba68fe01b",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "map/CTCAirshow.jpg": {
+      "outputHash": "fdfb269cea6c8d2dc2a3fa2ddd2c392df2842ab559f01bbc58b761b0ddef9e11",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "map/CTCTeaching.jpg": {
+      "outputHash": "8da97b52542c6a4ea3d08902ff85e8773817b617347253290f856acf0044721e",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "map/CTCTeaching2.JPG": {
+      "outputHash": "91db61aff9596e2e915d9eb9dfa2b1621e3c7b05141253c0fd5f9397a10b34af",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "map/GliderApproach.jpg": {
+      "outputHash": "aa495015091f3b13da3fed8ff82072c986e7aadede04bcc289c7c174675c927c",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "map/GliderDunking.jpg": {
+      "outputHash": "1058e8f6f19dfde029cfd751948e9b6d4edef93b06c6a993d79cc982f295392e",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "map/GliderHelicopter.jpg": {
+      "outputHash": "96864fd3141a855081afc8b1c568a2e0a0965c01a775d91e040456bc22783a81",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "map/GliderSoloLanding.jpg": {
+      "outputHash": "51a9d4ce7ee91712a051dcf1f7e7f876e14e0d8ceec4d091bfb2bd448a3f1d94",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "map/GliderSoloTouchdown.jpg": {
+      "outputHash": "d3bea0ae089bde6f1b9c23784e1068e8725b8c6fbf6c3bd5c438ea79e1d9478c",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "map/GliderTakeoff.jpg": {
+      "outputHash": "54885249f9aa0ac906f1477e37d547c0455fb62664cf78b6967f251b07816636",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "map/KREOS.JPG": {
+      "outputHash": "ccbe80de1df71a91e7ebfcd4fa10eff69264c759613783a5e85b7e4d8814052a",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "map/LegislatureSK.JPG": {
+      "outputHash": "6dc3968007733893e4fc951a969a85a5e0b6d7b0cc2d59d734aba90f2cb74f5c",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "map/McHacks1.jpg": {
+      "outputHash": "dab0180a6171c2fd045d2eee777b2a3fd221a59399bd9e63b426437bb3ff6f75",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "map/McHacks2.jpg": {
+      "outputHash": "c7f36728f77e442d8e75e9efd1539d00274baf06915e9ff0725818a2c588a72b",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "map/Melville.JPG": {
+      "outputHash": "2a3f8daa26f412d99b84b6752fa70def41ca7a908eabb0cf4d2b2f588c574e67",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "map/MyStaffPosition.JPG": {
+      "outputHash": "c945b47e4fbb2011b140b784e196a829c336d7a24c248dabbb76eae9a899f8c2",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "map/PowerDunking.jpg": {
+      "outputHash": "b53f8534e0dfd5d8abe761b8dc5df4720a3b961b9dbadf73d9e44e7cdf44cf76",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "map/PowerSolo.jpg": {
+      "outputHash": "535de43d4d9d855392d2c9135af4be61959fd759720d42603971ffd59f640d78",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "map/RDHApple.jpg": {
+      "outputHash": "5e1f1adde2bf6b2029852c3c064714badf959a968ac0cf1a111984fdfab6d026",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "map/RDHWork1.jpg": {
+      "outputHash": "c536278beefc07715b49dc62ec60baa03a3eb39ccd04bcba2d5c944c2c7b7bee",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "map/RDHWork2.jpg": {
+      "outputHash": "0e945c764ae429f5442eaa0b2f009670d8eecc08aa92d28c2a005f80cf09a1e0",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "map/RDHWork3.jpg": {
+      "outputHash": "d21c4c43489d98c665dca4dc4dd8e2e3607f9cf80d0032b7d53d77fec8aa49f0",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "map/SecretLocationSK.JPG": {
+      "outputHash": "bab73c6059150fe5d89c5a8f7c3571a35176316d459d16b927afde1af6cca14e",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "map/SOA2025.jpg": {
+      "outputHash": "19e681feed34e535e212f8f0a7252944b4fe8eb778f40992699fa9727ab110bb",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "map/TopFlight.JPG": {
+      "outputHash": "5342b4516f348570d061cbad7cc00d1f395960b58cedf17b5321b9f3cc6fbd27",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "map/UTRA1.png": {
+      "outputHash": "147afd3e20a013cf354fcf823f51525054ab5888ed47c5e12b9b449a71fd081b",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "map/UWCRRG.jpg": {
+      "outputHash": "3ec8eee87fe47bf9d22946775dfe5632d57e2e25ca6271625b591c28f28fe406",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "map/Weyburn.JPG": {
+      "outputHash": "20decc447eeb558cbcd74c061bd54cdd7c81b704b1bb4fcf91a3031909d1e41f",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "map/WingsCeremony.JPG": {
+      "outputHash": "954b2d54ed1f558c22115db7d5af11a19058e364f5312a30f4c8aa44248933b6",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "map/WingsGradCeremonyFormation.JPG": {
+      "outputHash": "36a73679d6a1e1f0ace2bee5de3ffcc4e2f682a2b98188a240544f4637e15502",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "map/WingsGradCeremonyFunny.JPG": {
+      "outputHash": "f45e8c2138ee4b243b72f497244f128ea351b0088707079c1cc3ab469397b357",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "map/Yorkton.JPG": {
+      "outputHash": "d5cfafad888ddfbb88ce21679be4ee55496b1c4b98ff491ecd5700f6d81eed39",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "projects/ASNA1.png": {
+      "outputHash": "67174326330dc3bb6d0b4a5e65c3eb505508f4420bb6502bf32beaf2581b4c04",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "projects/ASNA2.png": {
+      "outputHash": "a5d243890e3c74734a7cd454bf944fbba89a5bf7d2cca7bbe5da31a6ee763460",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "projects/ASNA3.png": {
+      "outputHash": "345f4d70a2cac7a2e0a3ebf11787fdd379a123908be34a5062c3e3eef1894832",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "projects/ASNA4.png": {
+      "outputHash": "502d2b9952b736bbcb65ae5c2c338c69d23a8c068d459c161ce868a533c50dbf",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "projects/FredBot1.png": {
+      "outputHash": "a2505cc50d42b77308e4a8262ca0df4f89a1cc562768612e552cfade9e827172",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "projects/FredBot2.png": {
+      "outputHash": "269468539c24588780d8935fb1ae19f260b50fa4d694c66ef2b40b8eb72e2100",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "projects/FredBot3.png": {
+      "outputHash": "7d3bdb4f5c768be32ab5e1be23f340968f9529972333297dec4b3e005153b91b",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "projects/FredBot4.png": {
+      "outputHash": "e2e9b1bf9cb0da739b5022f869b8a74662c11c08c20488f8266e3101a6c70190",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "projects/mcHacks1.png": {
+      "outputHash": "6598b8fc6429a3b56509a3493468e4093ff51e82c1020f75ade2a15fdf5043d6",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "projects/mcHacks2.png": {
+      "outputHash": "fd98c3ffae577170681fcde9660396e1cbcebfc09181ed3cb2dea224226ec9a2",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "projects/mcHacks3.png": {
+      "outputHash": "491f83fd92e40be09ea630bbf224766c8de2ac4798512b351d597c85338224d2",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "projects/mcHacks4.png": {
+      "outputHash": "610002d42bbf7ea2973b4ae34daf9110206cc9900a25ef5542f0e7b2d3580583",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "projects/mcHacks5.JPG": {
+      "outputHash": "45e147638a1d92be343d5ce1786333138bfc00318942e2d898c60ab75a7bdbc0",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "projects/Me_with_team.jpg": {
+      "outputHash": "acbb35798027b821977018be3b5be08c571872be8bd81d86fcb41e7995fab831",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "projects/my_team_utra.jpg": {
+      "outputHash": "88c445c5c57cdf941151d49eea3ee79de98741f3b954059e67a16ef53a2c81ce",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "projects/my_team_utra_2.jpg": {
+      "outputHash": "1e32d42efe1c2a25cb9ad208e865a6670115fc7d75e0eed7170c481d0394f4f9",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "projects/robotutra2025.jpg": {
+      "outputHash": "19f688052b13755323ef538cecd34754719cac07c917133671182b81046e1ecd",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "projects/VEX1.JPG": {
+      "outputHash": "bae50fc83de07ba38b6fc7e19e52a1d9c4c38f2141b11d1807bdba8ec5574f64",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "projects/VEX2.jpg": {
+      "outputHash": "e522273f445f2e27f2544c9029ef62706e30af06ba17b29e5c47c40f9bbb984d",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "projects/VEX3.jpg": {
+      "outputHash": "593c3f5be74b3ac2618f19086b25c8846822ec62ada90f57615f3d3a184d65f7",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "projects/VEX4.jpg": {
+      "outputHash": "38e4686e0ece116797c3316c0bd2973edc379fe7f8cbabce75c8c16a97ae8a30",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "projects/VEX5.jpg": {
+      "outputHash": "afa738ff963f90fe6d7a98f9b329bc516c21e00bd4a0d025a62a74d9d6a80561",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "projects/VEX6.jpg": {
+      "outputHash": "dc097347ee684cd2c360c0eb28b53697d60672307b1f534981aec3d0ca03c143",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "projects/VEX7.jpg": {
+      "outputHash": "607d1bcb5fed1a5061e9f1b924579cb437475dc8b2bd29664913a213867cd9c0",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "projects/VEX8.jpg": {
+      "outputHash": "d66e7bed11aa0456883d23158e85d830c32c4ca84a39f4305639ec3e41bc6c23",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    },
+    "projects/VEX9.jpg": {
+      "outputHash": "84d2a4bb46225437722461a418829086b76e4d48645b21ff9241c050d23cbcc3",
+      "settingsSig": "jq80-pq80-ll0.005-ly0.1-v6"
+    }
+  }
+}

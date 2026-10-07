@@ -3,19 +3,26 @@ import '@styles/animations.css'
 import '@styles/projectCard.css'
 import '@styles/welcome.css'
 import '@styles/bg-clouds.css'
+import '@styles/contact.css'
+import { lazy, Suspense } from 'react'
 import { projectCardData } from '@/markdowns/projectCard'
 import { skillsCardData } from '@/markdowns/skills'
 import ProjectCard from '@/components/projectCard'
-import Map from '@/components/map'
 import Resume from '@/components/resume'
 import SkillsGrid from '@/components/skillsCard'
 import WelcomeCard from '@/components/welcomeCard'
 import BackgroundClouds from '@/components/backgroundCloud'
+import { LoadPriorityProvider } from '@/components/loadPriorityProvider'
+
+// The map pulls in Leaflet + react-leaflet (~40 KB gzipped) and its CSS. It
+// lives below the fold, so we split it into its own chunk that only downloads
+// when this lazy component renders — keeping the initial script small.
+const Map = lazy(() => import('@/components/map'))
 
 
 export default function Home() {
     return (
-        <>
+        <LoadPriorityProvider>
           <BackgroundClouds />
           <div className="myName logo">
             <h1>Kevin Jiang</h1>
@@ -24,12 +31,14 @@ export default function Home() {
             <WelcomeCard />
           </div>
           <div>
-            <h1>Experiences</h1>
+            <h1>EXPERIENCES</h1>
             <p>Explore the markers to see more about me!</p>
-            <Map />
+            <Suspense fallback={<div className="mapSettings" aria-busy="true" />}>
+              <Map />
+            </Suspense>
           </div>
           <div>
-            <h1>Projects</h1>
+            <h1>PROJECTS</h1>
             <ProjectCard {...projectCardData.Website}/>
             <ProjectCard {...projectCardData.SOACompetition2025} />
             <ProjectCard {...projectCardData.UTRAHacks2025}/>
@@ -40,7 +49,7 @@ export default function Home() {
             <ProjectCard {...projectCardData.MyFirstGame}/>
           </div>
           <div>
-            <h1>Skills</h1>
+            <h1>SKILLS</h1>
             <SkillsGrid data={skillsCardData.language} />
             <SkillsGrid data={skillsCardData.backend} />
             <SkillsGrid data={skillsCardData.frontend} />
@@ -49,15 +58,15 @@ export default function Home() {
           </div>
 
           <div>
-            <h1>Resumé</h1>
+            <h1>RESUMÉ</h1>
             <Resume />
           </div>
 
 
           <div>
-            <h1>Contact</h1>
+            <h1>CONTACT</h1>
             <p>Feel free to reach out!</p>
-            <p>Currently open to work and actively searching for new opportunities :)</p>
+            <p>Always actively searching for new opportunities :)</p>
             <div className='contactWrapper'>
               <ul className='contactList'>
               <li><a href="mailto:kxjiang@uwaterloo.ca">→ kxjiang@uwaterloo.ca</a></li>
@@ -69,11 +78,12 @@ export default function Home() {
             </div>
           </div>
           
-          <p>
-            <br></br>
-            <br></br>
-            This message was approved by Kevin Jiang 👍
-          </p>
+          <div className="bg-grass">
+            <div className="bg-haze"></div>
+            <p className="approvedMessage">
+              This message was approved by Kevin Jiang 👍
+            </p>
+          </div>
     
     
     
@@ -89,6 +99,6 @@ export default function Home() {
           <p className="read-the-docs">
             Click on the Vite and React logos to learn more
           </p> */}
-        </>
+        </LoadPriorityProvider>
       )
 }

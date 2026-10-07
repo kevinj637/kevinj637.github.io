@@ -9,15 +9,6 @@
   background-position: center;
 }
 
-/* Mobile / small screens */
-@media (max-width: 600px) {
-  .projectCloud {
-    background-image: none;
-    width: 100%;
-    padding-right: 0; /* optional, looks cleaner on mobile */
-  }
-}
-
 .projectCard {
   max-width: 600px;
   margin: auto;
@@ -81,24 +72,102 @@
   transition: all 1.2s ease;
 }
 
-/* Mobile / small screens */
+/*
+ * Small-screen overrides for the project card. Applies at max-width: 600px
+ * (the single Mobile_Breakpoint for the site). Scaling approach: instead of a
+ * mobile redesign, the desktop card is reflowed into one centered vertical
+ * column — title, date, and link lines are full width and center-aligned
+ * rather than pushed to the right — and the decorative .projectCloud
+ * background image is dropped so the card renders cleanly and stays within
+ * the viewport on narrow phones.
+ */
 @media (max-width: 600px) {
-  .innerProjectCardTitle {
+  /* Drop the decorative cloud background; let the card span the column width
+     and stay horizontally centered within the viewport.
+     NOTE: .projectCloud also carries the .logo class (padding: 1.5em in
+     App.css). Previously only padding-right was zeroed, leaving 1.5em of
+     left padding — that asymmetry is what shifted every card to the right.
+     Zero the horizontal padding on both sides so the card centers.
+     The desktop .projectCloud also stacks padding-bottom: 50px + margin-bottom:
+     100px + the .logo top/bottom padding, which is what spread the cards so
+     far apart vertically. Collapse that extra space on small screens. */
+  .projectCloud {
+    background-image: none;
     width: 100%;
-    margin: auto;
-    padding-right: 0; /* optional, looks cleaner on mobile */
-    text-align: center;
+    padding-left: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    margin-top: 0;
+    margin-bottom: 16px;
+    margin-left: auto;
+    margin-right: auto;
   }
 
+  /* Center the card within its cloud wrapper and keep the stacked cards tight. */
   .projectCard {
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 0;
+  }
+
+  /* Small-screen title. Two things make the title grow only VERTICALLY:
+
+     1. The title box clips and its inner text is pinned to the column width
+        with border-box sizing and break-anywhere wrapping, so long titles wrap
+        onto more lines instead of ever widening the card.
+
+     2. A PERMANENT right gutter is reserved for the arrow (padding-right). The
+        arrow lives in that gutter at all times, so the box never has to shrink
+        or slide on hover to make room for it. This is why the div no longer
+        changes size when hovered. */
+  .projectCardTitle,
+  .projectCardTitleNoLink {
+    overflow: hidden;
+  }
+
+  .innerProjectCardTitle,
+  .innerProjectCardTitle h3 {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .innerProjectCardTitle {
+    margin: auto;
     text-align: center;
+    /* Reserve room on the right for the arrow so hover never resizes the box.
+       Balance the left side so the text stays visually centered. */
+    padding-left: 56px;
+    padding-right: 56px;
+  }
+
+  /* Cancel the desktop 70px slide on hover/tap — with the gutter reserved the
+     box must not move at all. The .projectCard ancestor wins on specificity
+     over the later base rule; !important guards against future changes. */
+  .projectCard .projectCardTitle:hover .innerProjectCardTitle,
+  .projectCard .projectCardTitleNoLink:hover .innerProjectCardTitle {
+    transform: none !important;
+  }
+
+  /* Park the arrow in the reserved right gutter, vertically centered, and stop
+     it from sliding on hover so nothing about the box moves. */
+  .projectCardTitle::after {
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .projectCardTitle:hover::after {
+    transform: translateY(-50%);
   }
 
   .projectCardDate {
     text-align: center;
   }
 
-  /* Center the link line on mobile instead of pushing it right */
+  /* Center the link line on mobile instead of pushing it right. */
   .projectCardLink {
     margin-left: auto;
     margin-right: auto;
@@ -172,10 +241,34 @@
   border-radius: 16px;
   padding: 12px;
   margin-left: auto;
-  width: 200px;
+  width: fit-content;
+  max-width: 100%;
+}
+
+.documentLinkPadding a {
+  white-space: nowrap;
 }
 
 /* Link line: pushed right on desktop */
 .projectCardLink {
   margin-left: auto;
+}
+
+/* Animated collapse wrapper. Uses the grid-rows 1fr <-> 0fr technique so
+   the body animates to its natural height without hardcoding a pixel value.
+   1.5s growth with a slightly overshooting ease-out bezier. */
+.projectCardCollapse {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows 1.0s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.projectCardCollapse.collapsed {
+  grid-template-rows: 0fr;
+}
+
+/* The grid child must be able to shrink below its content height and clip. */
+.projectCardCollapse > .projectCardBody {
+  overflow: hidden;
+  min-height: 0;
 }

@@ -4,8 +4,15 @@ import react from '@vitejs/plugin-react'
 import path from 'node:path'
 import tailwindcss from '@tailwindcss/vite'
 
-export default defineConfig({
+export default defineConfig(({ command }) => ({
   plugins: [react(), tailwindcss()],
+  // Static public assets live in two places:
+  //  For dev it lives in untracked kevin_react/public folder
+  //  For prod it lives in tracked top level folder /public, allowing direct access to static assets.
+  publicDir:
+    command === 'build'
+      ? path.resolve(__dirname, '../public')
+      : path.resolve(__dirname, 'public'),
   resolve: {
     alias: {
       '@styles': path.resolve(__dirname, 'src/styles'),
@@ -13,4 +20,20 @@ export default defineConfig({
     },
   },
   base: "/",
-})
+  build: {
+    // Modern browsers only — smaller output than the default 'modules' target
+    // since it skips legacy transpilation/polyfills.
+    target: 'es2020',
+    cssCodeSplit: true,
+    // Split large, rarely-changing dependencies into their own long-lived
+    // cache chunks so app-code changes don't force users to re-download them.
+    // Leaflet is additionally route-split via React.lazy on the Map component.
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom', 'react-router'],
+        },
+      },
+    },
+  },
+}))

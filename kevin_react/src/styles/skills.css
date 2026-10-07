@@ -6,15 +6,15 @@
 }
 
 .sk-cloud1 {
-    background-image: url("@/assets/clouds/cloud4.svg");
+    background-image: url("@/assets/clouds/cloud4.webp");
 }
 
 .sk-cloud2 {
-    background-image: url("@/assets/clouds/cloud9.svg");
+    background-image: url("@/assets/clouds/cloud9.webp");
 }
 
 .sk-cloud3 {
-    background-image: url("@/assets/clouds/cloud2.svg");
+    background-image: url("@/assets/clouds/cloud2.webp");
 }
 
 .cloud-drop {
@@ -35,4 +35,29 @@
 
 .skills-col {
     flex: 1 1 270px;
+}
+
+/*
+ * Small-screen scaling — applies at max-width: 600px (the single Mobile_Breakpoint).
+ * Approach: on phones the desktop 270px flex-basis is too wide, so we switch the
+ * skills grid to a 2-column layout. Once the viewport is roomier than 300px we let
+ * each item take half the row (minus the gap) so two columns sit side by side; the
+ * flex wrap then handles overflow automatically past that. Below 300px a single item
+ * fills the full width so it never overflows a very narrow viewport. Base desktop
+ * rules above are unchanged.
+ */
+@media (max-width: 600px) {
+    /* Very narrow phones: single full-width column, no overflow. */
+    .skills-col {
+        flex-basis: 100%;
+        max-width: 100%;
+    }
+}
+
+/* Wider than 300px (still within the mobile breakpoint): two columns, then auto. */
+@media (min-width: 301px) and (max-width: 600px) {
+    .skills-col {
+        flex-basis: calc(50% - 14px);
+        max-width: calc(50% - 14px);
+    }
 }
