@@ -2,7 +2,7 @@ import type { mapProps } from "@/interfaces/map";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import { MapData } from "@/markdowns/map";
 import { useFadeIn } from "./flyIn";
-import L from 'leaflet'
+import L from "leaflet"
 //Remember to manually port leaflet css >;D
 import 'leaflet/dist/leaflet.css'
 

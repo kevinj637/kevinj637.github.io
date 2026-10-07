@@ -66,7 +66,7 @@ export const MapData: Record<string, mapProps>={
     },
     Regina6: {
         position: [50.99130656217118, -104.34623781393665],
-        popupText: autoFormat({time: "2023", teaser: "Checking off cross-country requirements 📝"}),
+        popupText: autoFormat({location: "Saskatchewan", time: "2023", teaser: "Checking off cross-country requirements 📝"}),
         imageLink: "/public/map/SecretLocationSK.JPG",
     },
     Regina7: {
@@ -189,12 +189,12 @@ export const MapData: Record<string, mapProps>={
     },
     SOA1: {
         position: [47.6117930709619, -122.33294402548297],
-        popupText: autoFormat({location: "Seattle, ON", time: "2026", teaser: "Attending, and being recognized at professional conference 💡🗣️"}),
+        popupText: autoFormat({location: "Seattle, WA", time: "2026", teaser: "Attending, and being recognized at professional conference 💡🗣️"}),
         imageLink: "/public/map/SOA2025.jpg",
     },
     Boeing: {
         position: [47.92125153372701, -122.28925965397211],
-        popupText: autoFormat({location: "", time: "", teaser: "Long-term interest: Transport & Aviation ✈️"}),
+        popupText: autoFormat({location: "Seattle, WA", time: "2026", teaser: "Long-term interest: Transport & Aviation ✈️"}),
         imageLink: "/public/map/Boeing.jpg",
     },
 
