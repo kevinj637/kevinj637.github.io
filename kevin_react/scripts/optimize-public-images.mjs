@@ -1,6 +1,6 @@
 // Optimize raster images (JPEG/PNG) under the deployed public/ directory in
 // place, preserving filenames and extensions so existing references
-// (e.g. "/public/map/Foo.jpg", including odd casing like ".JPG") keep working.
+// (e.g. "/map/Foo.jpg", including odd casing like ".JPG") keep working.
 //
 // FLOW (per image), kept deliberately simple:
 //   1. Try LOSSLESS compression. If it produces a smaller file, store it. Done.

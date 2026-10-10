@@ -4,15 +4,12 @@ import react from '@vitejs/plugin-react'
 import path from 'node:path'
 import tailwindcss from '@tailwindcss/vite'
 
-export default defineConfig(({ command }) => ({
+export default defineConfig(() => ({
   plugins: [react(), tailwindcss()],
-  // Static public assets live in two places:
-  //  For dev it lives in untracked kevin_react/public folder
-  //  For prod it lives in tracked top level folder /public, allowing direct access to static assets.
-  publicDir:
-    command === 'build'
-      ? path.resolve(__dirname, '../public')
-      : path.resolve(__dirname, 'public'),
+  // Static public assets live in the tracked top level folder /public for both
+  // dev and build. kevin_react/public is only a staging dir for new images;
+  // `npm run optimize-images` syncs it into /public.
+  publicDir: path.resolve(__dirname, '../public'),
   resolve: {
     alias: {
       '@styles': path.resolve(__dirname, 'src/styles'),
